@@ -1,0 +1,98 @@
+@model MultiShop.DtoLayer.OrderDtos.OrderAddressDtos.UpdateOrderAddressDto
+@{
+    ViewData["Title"] = "Adresi Düzenle";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<div class="profile-container">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar shadow-sm">
+                    <div class="sidebar-header">
+                        <h4>Hesabım</h4>
+                        <small class="text-muted">Profil</small>
+                    </div>
+                    
+                    <div class="sidebar-section-title">Siparişlerim</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/MyOrders"><i class="fas fa-box"></i> Tüm Siparişlerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyReviews"><i class="fas fa-star"></i> Değerlendirmelerim</a></li>
+                    </ul>
+
+                    <div class="sidebar-section-title">Hesabım & Yardım</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/Index"><i class="fas fa-user"></i> Kullanıcı Bilgilerim</a></li>
+                        <li class="sidebar-menu-item active"><a href="/User/MyAddress"><i class="fas fa-map-marker-alt"></i> Adres Bilgilerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyCards"><i class="fas fa-credit-card"></i> Kayıtlı Kartlarım</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyPassword"><i class="fas fa-lock"></i> Şifre Değişikliği</a></li>
+                        <li class="sidebar-menu-item text-danger"><a href="/Login/LogOut"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="profile-content shadow-sm">
+                    <div class="content-header">
+                        <h2>Adresi Düzenle</h2>
+                        <p class="text-muted">Adres bilgilerinizi güncelleyebilirsiniz.</p>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-10">
+                            <form method="post" asp-action="UpdateAddress" asp-controller="User">
+                                <input type="hidden" asp-for="AddressId" />
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">Alıcı Adı *</label>
+                                        <input type="text" asp-for="Name" class="form-control" placeholder="Adınız" required>
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">Alıcı Soyadı *</label>
+                                        <input type="text" asp-for="Surname" class="form-control" placeholder="Soyadınız" required>
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">Telefon Numarası *</label>
+                                        <input type="text" asp-for="Phone" class="form-control" placeholder="05XX XXX XX XX" required>
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">Ülke *</label>
+                                        <input type="text" asp-for="Country" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">İl</label>
+                                        <input type="text" asp-for="City" class="form-control" placeholder="Örn: İstanbul" required>
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">İlçe</label>
+                                        <input type="text" asp-for="District" class="form-control" placeholder="Örn: Kadıköy" required>
+                                    </div>
+                                    <div class="col-md-12 form-group mb-3">
+                                        <label class="font-weight-bold">Mahalle / Sokak</label>
+                                        <input type="text" asp-for="Detail1" class="form-control" placeholder="Mahalle, sokak, cadde..." required>
+                                    </div>
+                                    <div class="col-md-12 form-group mb-3">
+                                        <label class="font-weight-bold">Bina / Daire No</label>
+                                        <input type="text" asp-for="Detail2" class="form-control" placeholder="Bina no, Daire no...">
+                                    </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">Posta Kodu</label>
+                                        <input type="text" asp-for="ZipCode" class="form-control" placeholder="Örn: 34000">
+                                    </div>
+                                    <div class="col-md-6 form-group mb-4">
+                                        <label class="font-weight-bold">Adres Başlığı</label>
+                                        <input type="text" asp-for="Description" class="form-control" placeholder="Örn: Ev Adresi, İş Adresi" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn font-weight-bold px-5 py-3" style="background-color: #ffd333; color: #3d464d;">Güncelle</button>
+                                <a href="/User/MyAddress" class="btn btn-outline-secondary px-5 py-3 ml-2">İptal</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

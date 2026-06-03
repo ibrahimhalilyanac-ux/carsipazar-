@@ -1,0 +1,659 @@
+@model List<FavoriteItemModel>
+
+@{
+    ViewData["Title"] = "Favorilerim";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<!-- Google Fonts Import for Premium Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="favorite-page-wrapper py-4">
+    <div class="container-fluid px-xl-5">
+        <div class="row">
+            <!-- Left Sidebar Column -->
+            <div class="col-lg-3 col-md-4 mb-4">
+                <!-- Back Arrow & Breadcrumb/Brand -->
+                <div class="d-flex align-items-center mb-3">
+                    <a href="javascript:history.back()" class="btn-back-circle mr-2">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <span class="text-muted font-weight-bold" style="font-size: 13px; letter-spacing: 0.5px; font-family: 'Outfit', sans-serif;">ÇarşıPazar</span>
+                </div>
+                
+                <!-- Sidebar Navigation Card -->
+                <div class="sidebar-card bg-white p-3 border rounded-lg shadow-sm">
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active-pill" href="/Favorite/Index">
+                                Beğendiklerim
+                            </a>
+                        </li>
+                        <li class="nav-item mt-1">
+                            <a class="nav-link text-secondary font-weight-medium" href="javascript:void(0)" style="cursor: not-allowed; opacity: 0.6;">
+                                Koleksiyonlarım
+                            </a>
+                        </li>
+                        <li class="nav-item mt-1">
+                            <a class="nav-link text-secondary font-weight-medium" href="javascript:void(0)" style="cursor: not-allowed; opacity: 0.6;">
+                                Alışveriş Listelerim
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Right Main Column (Favorite Products List) -->
+            <div class="col-lg-9 col-md-8">
+                <!-- Header Actions Block -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between pb-3 mb-3 border-bottom bg-white p-3 rounded-lg border shadow-sm">
+                    <!-- Title Area -->
+                    <div class="d-flex align-items-center flex-wrap gap-2 mb-2 mb-md-0">
+                        <h4 class="font-weight-bold text-dark m-0 mr-3" style="font-family: 'Outfit', sans-serif;">Beğendiklerim</h4>
+                        <span class="badge badge-light-blue px-2 py-1 mr-2" style="font-size: 12px; font-weight: 600;">@Model.Count ürün</span>
+                        <span class="text-muted" style="font-size: 13px; font-weight: 500;">
+                            <i class="fas fa-lock mr-1" style="font-size: 11px;"></i> Gizli liste
+                        </span>
+                    </div>
+                    
+                    <!-- Buttons / Sort select box -->
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Sort dropdown -->
+                        <div class="d-flex align-items-center mr-2">
+                            <span class="text-secondary mr-2 d-none d-sm-inline" style="font-size: 13px; font-weight: 500;">Sırala</span>
+                            <select class="custom-select-orange" id="sortFavorites">
+                                <option value="default" selected>Varsayılan</option>
+                                <option value="price-asc">Fiyata Göre Artan</option>
+                                <option value="price-desc">Fiyata Göre Azalan</option>
+                                <option value="name-asc">A-Z Sırala</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Share button -->
+                        <button class="btn btn-action-box mr-2" title="Paylaş">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        
+                        <!-- Edit Button -->
+                        <button class="btn btn-action-box" style="padding-left: 15px; padding-right: 15px;">
+                            Düzenle
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filter Pills / Chips Row -->
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+                    <button class="chip-btn" id="btnStoktakiler" onclick="toggleFilter('stok')">
+                        Stoktakiler
+                    </button>
+                    <button class="chip-btn" id="btnFiyatiDusenler" onclick="toggleFilter('fiyat-dusuk')">
+                        Fiyatı Düşenler
+                    </button>
+                    <div class="dropdown">
+                        <button class="chip-btn dropdown-toggle" type="button" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Kategoriler
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0 mt-1" aria-labelledby="categoriesDropdown" style="border-radius: 12px; padding: 8px; z-index: 1050;">
+                            <a class="dropdown-item category-filter-item py-2" href="#" onclick="filterByCategory('all')">Tüm Kategoriler</a>
+                            <div class="dropdown-divider"></div>
+                            <!-- Dynamically populated categories -->
+                            <div id="dynamicCategoryMenu"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product Cards Grid -->
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-4" id="favoritesGrid">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <!-- Product Card Container -->
+                            <div class="col mb-4 favorite-card-col" data-product-id="@item.ProductId" data-product-price="@item.ProductPrice" data-product-name="@item.ProductName">
+                                <div class="favorite-product-card bg-white border shadow-sm h-100 position-relative">
+                                    <!-- Image Card Section -->
+                                    <div class="image-section text-center p-3">
+                                        <img src="@item.ProductImageUrl" class="product-img" alt="@item.ProductName" referrerpolicy="no-referrer">
+                                        
+                                        <!-- Absolute Three-dot action button -->
+                                        <div class="dropdown position-absolute" style="top: 15px; right: 15px; z-index: 10;">
+                                            <button class="btn btn-three-dots shadow-sm" type="button" id="dotsMenu-@item.ProductId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right shadow-lg border-0 mt-1" aria-labelledby="dotsMenu-@item.ProductId" style="border-radius: 12px; padding: 6px; min-width: 160px; font-size: 13.5px; z-index: 1060;">
+                                                <a class="dropdown-item py-2 font-weight-medium text-dark" href="/Favorite/AddToCartAndRemoveFromFavorite/@item.ProductId">
+                                                    <i class="fa fa-shopping-cart text-primary mr-2" style="font-size: 12px;"></i> Sepete Ekle
+                                                </a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item py-2 font-weight-medium text-danger" href="/Favorite/RemoveFavorite/@item.ProductId">
+                                                    <i class="fa fa-trash-alt mr-2" style="font-size: 12px;"></i> Favoriden Kaldır
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Product Info Section -->
+                                    <div class="info-section p-3 d-flex flex-column justify-content-between">
+                                        <div>
+                                            <!-- Brand Logo / Badge -->
+                                            <div class="brand-helper d-flex align-items-center mb-1">
+                                                <span class="badge badge-brand">ÇarşıPazar</span>
+                                            </div>
+                                            <!-- Product Title -->
+                                            <h5 class="product-title" title="@item.ProductName">
+                                                @item.ProductName
+                                            </h5>
+                                            <!-- Stars and Reviews -->
+                                            <div class="rating-stars d-flex align-items-center mb-2">
+                                                <div class="stars mr-1">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star text-muted" style="opacity: 0.3;"></i>
+                                                </div>
+                                                <span class="rating-count">(599)</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Price & Add To Cart Button -->
+                                        <div class="mt-3">
+                                            <div class="product-price mb-2">
+                                                @item.ProductPrice.ToString("N2") TL
+                                            </div>
+                                            <a href="/Favorite/AddToCartAndRemoveFromFavorite/@item.ProductId" class="btn btn-add-to-cart btn-block">
+                                                <i class="fa fa-shopping-cart mr-2"></i> Sepete Ekle
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <!-- Empty Favorites State -->
+                        <div class="col-12 py-5 text-center bg-white rounded-lg border shadow-sm">
+                            <div class="mb-4">
+                                <i class="far fa-heart text-muted" style="font-size: 64px; opacity: 0.5;"></i>
+                            </div>
+                            <h4 class="font-weight-bold text-dark mb-2">Favori Ürününüz Bulunmuyor</h4>
+                            <p class="text-secondary mb-4 mx-auto" style="max-width: 400px; font-size: 14.5px;">Beğendiğiniz ürünleri favorilerinize ekleyerek dilediğiniz an kolayca satın alabilir veya fiyat düşüşlerini takip edebilirsiniz.</p>
+                            <a href="/" class="btn btn-shopping mt-2">
+                                Alışverişe Başla
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* CSS Styles matching Hepsiburada exactly with a premium twist */
+    .favorite-page-wrapper {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+        min-height: 80vh;
+    }
+
+    /* Back Button circle */
+    .btn-back-circle {
+        width: 38px;
+        height: 38px;
+        background-color: #ffffff;
+        color: #334155;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .btn-back-circle:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+        text-decoration: none;
+    }
+
+    /* Sidebar Navigation Active Pill styling */
+    .sidebar-card {
+        border-color: #e2e8f0 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .sidebar-nav .nav-link {
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+    /* Active item: Solid Coral/Red capsule matching Hepsiburada */
+    .active-pill {
+        background-color: #ff3e55 !important; /* Hepsiburada signature Red */
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(255, 62, 85, 0.3);
+    }
+
+    /* Badges */
+    .badge-light-blue {
+        background-color: #eff6ff;
+        color: #2563eb;
+        border-radius: 6px;
+    }
+
+    /* Action Buttons (Share and Edit) */
+    .btn-action-box {
+        background-color: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        color: #475569;
+        height: 42px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13.5px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .btn-action-box:hover {
+        background-color: #f8fafc;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+
+    /* Orange bordered custom select */
+    .custom-select-orange {
+        height: 42px;
+        background-color: #ffffff;
+        border: 1.5px solid #fd5b2f; /* Orange border matching active select */
+        border-radius: 10px;
+        padding: 0 36px 0 16px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #fd5b2f;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fd5b2f' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 14px 10px;
+    }
+
+    .custom-select-orange:focus {
+        box-shadow: 0 0 0 3px rgba(253, 91, 47, 0.15);
+    }
+
+    /* Chips Filter Button styling */
+    .chip-btn {
+        background-color: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        outline: none;
+    }
+
+    .chip-btn:hover {
+        border-color: #cbd5e1;
+        background-color: #f8fafc;
+        color: #0f172a;
+    }
+
+    .chip-btn.active-chip {
+        background-color: #fef2f2;
+        border-color: #ff3e55;
+        color: #ff3e55;
+        font-weight: 600;
+    }
+
+    .chip-btn:focus {
+        outline: none;
+    }
+
+    /* Product card list override */
+    .favorite-product-card {
+        border-radius: 16px;
+        border-color: #e2e8f0 !important;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .favorite-product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08) !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    /* Image section style */
+    .image-section {
+        background-color: #ffffff;
+        position: relative;
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .product-img {
+        max-height: 80%;
+        max-width: 80%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .favorite-product-card:hover .product-img {
+        transform: scale(1.03);
+    }
+
+    /* Three dots overlay button styling */
+    .btn-three-dots {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.95);
+        border: 1px solid #e2e8f0;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.2s ease;
+    }
+
+    .btn-three-dots:hover {
+        background-color: #ffffff;
+        color: #0f172a;
+        transform: scale(1.05);
+    }
+
+    /* Dropdown items hover */
+    .dropdown-item:hover {
+        background-color: #f8fafc;
+    }
+
+    .dropdown-item.text-danger:hover {
+        background-color: #fef2f2;
+    }
+
+    /* Info section style */
+    .info-section {
+        flex: 1;
+    }
+
+    .badge-brand {
+        background-color: #f1f5f9;
+        color: #64748b;
+        font-size: 10.5px;
+        font-weight: 600;
+        border-radius: 4px;
+        padding: 3px 6px;
+    }
+
+    .product-title {
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #1e293b;
+        line-height: 1.5;
+        height: 40px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        margin-bottom: 8px;
+        transition: color 0.2s ease;
+    }
+
+    .favorite-product-card:hover .product-title {
+        color: #ff3e55; /* Changes to red on card hover */
+    }
+
+    /* Ratings */
+    .stars {
+        color: #fbbf24; /* Golden star rating */
+        font-size: 11px;
+    }
+
+    .rating-count {
+        font-size: 11.5px;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Price tag styling */
+    .product-price {
+        font-family: 'Outfit', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    /* Basket Button inside card */
+    .btn-add-to-cart {
+        background-color: #ffffff;
+        color: #ff3e55;
+        border: 1.5px solid #ff3e55;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .btn-add-to-cart:hover {
+        background-color: #ff3e55;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(255, 62, 85, 0.2);
+    }
+
+    /* Empty state styling */
+    .btn-shopping {
+        background-color: #ff3e55;
+        color: #ffffff;
+        font-size: 14.5px;
+        font-weight: 600;
+        padding: 12px 36px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(255, 62, 85, 0.25);
+        transition: all 0.2s ease;
+        border: none;
+    }
+
+    .btn-shopping:hover {
+        background-color: #e02f45;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(255, 62, 85, 0.35);
+    }
+
+    /* Category dropdown links styling */
+    .category-filter-item {
+        font-size: 13px;
+        font-weight: 500;
+        color: #475569;
+        border-radius: 6px;
+    }
+</style>
+
+<!-- Sorting & Dynamic Filtering script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Synchronize client-side localStorage with the server-rendered favorites
+        let serverFavs = [];
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                <text>serverFavs.push("@item.ProductId");</text>
+            }
+        }
+        localStorage.setItem('favorites', JSON.stringify(serverFavs));
+        
+        // Dynamically update the header badge to match server state immediately
+        let badge = document.getElementById('favoriteCountBadge');
+        if (badge) {
+            badge.innerText = serverFavs.length;
+        }
+
+        // --- Client-Side Sorting, Searching & Chips Filtering ---
+        const sortSelect = document.getElementById('sortFavorites');
+        const grid = document.getElementById('favoritesGrid');
+        const originalCards = Array.from(grid.querySelectorAll('.favorite-card-col'));
+        let activeFilters = {
+            stok: false,
+            fiyatDusuk: false,
+            category: 'all'
+        };
+
+        // Populate Category Menu dynamically based on cards in favorites
+        const categories = new Set();
+        originalCards.forEach(card => {
+            let title = card.getAttribute('data-product-name').toLowerCase();
+            let categoryName = "Diğer";
+            if (title.includes("telefon") || title.includes("bilgisayar") || title.includes("tv") || title.includes("kulaklık") || title.includes("elektronik")) {
+                categoryName = "Elektronik";
+            } else if (title.includes("elbise") || title.includes("pantolon") || title.includes("giyim") || title.includes("ayakkabı") || title.includes("mont")) {
+                categoryName = "Giyim & Ayakkabı";
+            } else if (title.includes("kitap") || title.includes("roman") || title.includes("defter") || title.includes("kalem") || title.includes("hobi")) {
+                categoryName = "Kitap & Hobi";
+            } else if (title.includes("deterjan") || title.includes("şampuan") || title.includes("sabun") || title.includes("bakım") || title.includes("ruj") || title.includes("kozmetik")) {
+                categoryName = "Kozmetik & Kişisel Bakım";
+            } else if (title.includes("makine") || title.includes("buzdolabı") || title.includes("fırın") || title.includes("ütü") || title.includes("samsung")) {
+                categoryName = "Beyaz Eşya & Ev Aletleri";
+            }
+            card.setAttribute('data-category', categoryName);
+            categories.add(categoryName);
+        });
+
+        // Add dynamic category links to drop down menu
+        const menu = document.getElementById('dynamicCategoryMenu');
+        if (menu && categories.size > 0) {
+            categories.forEach(cat => {
+                const a = document.createElement('a');
+                a.className = 'dropdown-item category-filter-item py-2';
+                a.href = '#';
+                a.innerText = cat;
+                a.onclick = function(e) {
+                    e.preventDefault();
+                    filterByCategory(cat);
+                };
+                menu.appendChild(a);
+            });
+        }
+
+        // Sorting Logic
+        sortSelect.addEventListener('change', function() {
+            let cards = Array.from(grid.querySelectorAll('.favorite-card-col'));
+            const sortBy = sortSelect.value;
+            
+            cards.sort((a, b) => {
+                if (sortBy === 'price-asc') {
+                    let priceA = parseFloat(a.getAttribute('data-product-price'));
+                    let priceB = parseFloat(b.getAttribute('data-product-price'));
+                    return priceA - priceB;
+                } else if (sortBy === 'price-desc') {
+                    let priceA = parseFloat(a.getAttribute('data-product-price'));
+                    let priceB = parseFloat(b.getAttribute('data-product-price'));
+                    return priceB - priceA;
+                } else if (sortBy === 'name-asc') {
+                    let nameA = a.getAttribute('data-product-name').toLowerCase();
+                    let nameB = b.getAttribute('data-product-name').toLowerCase();
+                    return nameA.localeCompare(nameB, 'tr');
+                } else {
+                    // Default order (original index)
+                    return originalCards.indexOf(a) - originalCards.indexOf(b);
+                }
+            });
+            
+            // Append in new order
+            cards.forEach(card => grid.appendChild(card));
+        });
+
+        // Filter Toggle Logic
+        window.toggleFilter = function(filterType) {
+            const btnStok = document.getElementById('btnStoktakiler');
+            const btnFiyat = document.getElementById('btnFiyatiDusenler');
+
+            if (filterType === 'stok') {
+                activeFilters.stok = !activeFilters.stok;
+                btnStok.classList.toggle('active-chip', activeFilters.stok);
+            } else if (filterType === 'fiyat-dusuk') {
+                activeFilters.fiyatDusuk = !activeFilters.fiyatDusuk;
+                btnFiyat.classList.toggle('active-chip', activeFilters.fiyatDusuk);
+            }
+            applyAllFilters();
+        };
+
+        window.filterByCategory = function(categoryName) {
+            activeFilters.category = categoryName;
+            const btnCat = document.getElementById('categoriesDropdown');
+            if (categoryName === 'all') {
+                btnCat.innerText = 'Kategoriler';
+                btnCat.classList.remove('active-chip');
+            } else {
+                btnCat.innerText = 'Kategori: ' + categoryName;
+                btnCat.classList.add('active-chip');
+            }
+            applyAllFilters();
+        };
+
+        function applyAllFilters() {
+            originalCards.forEach(card => {
+                let show = true;
+                
+                // 1. Stock mock filter (simulate that odd product IDs have stock, for demonstration)
+                if (activeFilters.stok) {
+                    let pid = card.getAttribute('data-product-id');
+                    if (parseInt(pid.replace(/\D/g, '')) % 2 === 1) {
+                        show = false;
+                    }
+                }
+                
+                // 2. Price drop mock filter (simulate that products priced above 5000 have dropped price)
+                if (activeFilters.fiyatDusuk) {
+                    let price = parseFloat(card.getAttribute('data-product-price'));
+                    if (price < 5000) {
+                        show = false;
+                    }
+                }
+                
+                // 3. Category Filter
+                if (activeFilters.category !== 'all') {
+                    let cat = card.getAttribute('data-category');
+                    if (cat !== activeFilters.category) {
+                        show = false;
+                    }
+                }
+
+                card.style.display = show ? 'block' : 'none';
+            });
+        }
+    });
+</script>

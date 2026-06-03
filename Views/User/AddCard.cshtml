@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Yeni Kart Ekle";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<div class="profile-container">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar shadow-sm">
+                    <div class="sidebar-header">
+                        <h4>Hesabım</h4>
+                        <small class="text-muted">Profil</small>
+                    </div>
+                    
+                    <div class="sidebar-section-title">Siparişlerim</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/MyOrders"><i class="fas fa-box"></i> Tüm Siparişlerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyReviews"><i class="fas fa-star"></i> Değerlendirmelerim</a></li>
+                    </ul>
+
+                    <div class="sidebar-section-title">Hesabım & Yardım</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/Index"><i class="fas fa-user"></i> Kullanıcı Bilgilerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyAddress"><i class="fas fa-map-marker-alt"></i> Adres Bilgilerim</a></li>
+                        <li class="sidebar-menu-item active"><a href="/User/MyCards"><i class="fas fa-credit-card"></i> Kayıtlı Kartlarım</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyPassword"><i class="fas fa-lock"></i> Şifre Değişikliği</a></li>
+                        <li class="sidebar-menu-item text-danger"><a href="/Login/LogOut"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="profile-content shadow-sm">
+                    <div class="content-header">
+                        <h2>Yeni Kart Ekle</h2>
+                        <p class="text-muted">Kredi veya banka kartı bilgilerinizi güvenle ekleyebilirsiniz.</p>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <!-- Görsel Kart Tasarımı -->
+                            <div class="card bg-dark text-white mb-4" style="border-radius: 15px; height: 200px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <i class="fas fa-microchip fa-2x text-warning"></i>
+                                        <h5 class="mb-0 text-white font-weight-bold" style="letter-spacing: 2px;">VISA</h5>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <h3 class="mb-0 text-white font-weight-bold" id="cardNumberDisplay" style="letter-spacing: 3px;">**** **** **** ****</h3>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <div>
+                                            <small class="text-white-50 d-block">Kart Sahibi</small>
+                                            <span class="text-white text-uppercase" id="cardNameDisplay">AD SOYAD</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <small class="text-white-50 d-block">SKT</small>
+                                            <span class="text-white" id="cardExpiryDisplay">AA/YY</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form method="post" asp-action="AddCard" asp-controller="User" onsubmit="showToast('Ödeme API entegrasyonu tamamlanmadığından kartınız yerel cihaza mock olarak kaydedildi.', 'success')">
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold">Kart Üzerindeki İsim</label>
+                                    <input type="text" class="form-control" name="CardName" id="CardName" placeholder="Kartın üzerindeki ad soyad" required onkeyup="document.getElementById('cardNameDisplay').innerText = this.value || 'AD SOYAD';">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold">Kart Numarası</label>
+                                    <input type="text" class="form-control" name="CardNumber" id="CardNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required onkeyup="document.getElementById('cardNumberDisplay').innerText = this.value || '**** **** **** ****';">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label class="font-weight-bold">Son Kullanma Tarihi</label>
+                                        <input type="text" class="form-control" name="ExpiryDate" id="ExpiryDate" placeholder="AA/YY" maxlength="5" required onkeyup="document.getElementById('cardExpiryDisplay').innerText = this.value || 'AA/YY';">
+                                    </div>
+                                    <div class="col-md-6 form-group mb-4">
+                                        <label class="font-weight-bold">CVV</label>
+                                        <input type="password" class="form-control" name="CVV" placeholder="XXX" maxlength="3" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn font-weight-bold px-5 py-3" style="background-color: #ffd333; color: #3d464d;">Kartı Kaydet</button>
+                                <a href="/User/MyCards" class="btn btn-outline-secondary px-5 py-3 ml-2">İptal</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

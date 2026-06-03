@@ -1,0 +1,367 @@
+@{
+    string categoryName = ViewBag.CategoryName ?? "Tümü";
+    var turkishCulture = new System.Globalization.CultureInfo("tr-TR");
+    string categoryLower = categoryName.ToLower(turkishCulture);
+}
+
+<div class="filter-sidebar shadow-sm">
+    <!-- Genel Kategori Bilgisi -->
+    <div class="p-3 border-bottom bg-light">
+        <h6 class="m-0 font-weight-bold text-dark">@categoryName</h6>
+    </div>
+
+    <!-- Marka / Yazar Filter (Her Zaman Var) -->
+    <div class="filter-section active">
+        <div class="filter-title">
+            <span id="lblBrand">@(categoryLower.Contains("kitap") || categoryLower.Contains("hobi") || categoryLower.Contains("oyuncak") || categoryLower.Contains("kırtasiye") ? "Yazar / Yayınevi" : "Marka")</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="filter-content">
+            <div class="filter-search">
+                <input type="text" id="brandSearchInput" placeholder="@(categoryLower.Contains("kitap") || categoryLower.Contains("hobi") || categoryLower.Contains("oyuncak") || categoryLower.Contains("kırtasiye") ? "Yazar ara..." : "Marka ara...")">
+            </div>
+            <div class="filter-list">
+                @if (categoryLower.Contains("giyim") || categoryLower.Contains("aksesuar") || categoryLower.Contains("ayakkabı") || categoryLower.Contains("çanta") || categoryLower.Contains("bebek") || categoryLower.Contains("spor") || categoryLower.Contains("outdoor"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Koton"> <span>Koton</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Mavi"> <span>Mavi</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="LC Waikiki"> <span>LC Waikiki</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Nike"> <span>Nike</span></label>
+                }
+                else if (categoryLower.Contains("elektronik") || categoryLower.Contains("teknoloji") || categoryLower.Contains("bilgisayar") || categoryLower.Contains("telefon"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Samsung"> <span>Samsung</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Apple"> <span>Apple</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Xiaomi"> <span>Xiaomi</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Asus"> <span>Asus</span></label>
+                }
+                else if (categoryLower.Contains("kitap") || categoryLower.Contains("hobi") || categoryLower.Contains("oyuncak") || categoryLower.Contains("kırtasiye"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Yaşar Kemal"> <span>Yaşar Kemal</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Can Yayınları"> <span>Can Yayınları</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="İletişim"> <span>İletişim</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Yapı Kredi"> <span>Yapı Kredi</span></label>
+                }
+                else if (categoryLower.Contains("kozmetik") || categoryLower.Contains("bakım") || categoryLower.Contains("parfüm"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="L'Oreal"> <span>L'Oreal</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Nivea"> <span>Nivea</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Avon"> <span>Avon</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Clinique"> <span>Clinique</span></label>
+                }
+                else if (categoryLower.Contains("süpermarket") || categoryLower.Contains("gıda"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Ülker"> <span>Ülker</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Eti"> <span>Eti</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Lipton"> <span>Lipton</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Nestle"> <span>Nestlé</span></label>
+                }
+                else if (categoryLower.Contains("mutfak") || categoryLower.Contains("gereç"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Tefal"> <span>Tefal</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Karaca"> <span>Karaca</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Korkmaz"> <span>Korkmaz</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Schafer"> <span>Schafer</span></label>
+                }
+                else if (categoryLower.Contains("ev") || categoryLower.Contains("dekorasyon") || categoryLower.Contains("mobilya"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="IKEA"> <span>IKEA</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Bellona"> <span>Bellona</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="English Home"> <span>English Home</span></label>
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Karaca Home"> <span>Karaca Home</span></label>
+                }
+                else
+                {
+                    <label class="filter-item"><input type="checkbox" class="brand-filter" value="Diğer Markalar"> <span>Diğer Markalar</span></label>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Fiyat Filter (Her Zaman Var) -->
+    <div class="filter-section">
+        <div class="filter-title">
+            <span>Fiyat</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="filter-content">
+            <div class="price-inputs">
+                <input type="number" id="priceMin" placeholder="En Az">
+                <input type="number" id="priceMax" placeholder="En Çok">
+            </div>
+            <button class="btn-filter-apply mt-2" id="btnPriceApply">Uygula</button>
+        </div>
+    </div>
+
+    <!-- Kategoriye Özgü Mantıksal Özellik Filtresi -->
+    <div class="filter-section">
+        <div class="filter-title">
+            <span id="lblSizeFilter">
+                @if (categoryLower.Contains("giyim") || categoryLower.Contains("aksesuar") || categoryLower.Contains("bebek") || categoryLower.Contains("spor") || categoryLower.Contains("outdoor"))
+                {
+                    @("Beden")
+                }
+                else if (categoryLower.Contains("ayakkabı") || categoryLower.Contains("çanta"))
+                {
+                    @("Ayakkabı Numarası")
+                }
+                else if (categoryLower.Contains("elektronik") || categoryLower.Contains("teknoloji"))
+                {
+                    @("Ekran Boyutu / Bellek")
+                }
+                else if (categoryLower.Contains("ev") || categoryLower.Contains("dekorasyon") || categoryLower.Contains("mobilya"))
+                {
+                    @("Malzeme / Boyut")
+                }
+                else if (categoryLower.Contains("mutfak"))
+                {
+                    @("Malzeme")
+                }
+                else if (categoryLower.Contains("kozmetik") || categoryLower.Contains("bakım") || categoryLower.Contains("parfüm"))
+                {
+                    @("Cilt Tipi / Hacim")
+                }
+                else if (categoryLower.Contains("kitap") || categoryLower.Contains("hobi") || categoryLower.Contains("oyuncak") || categoryLower.Contains("kırtasiye"))
+                {
+                    @("Tür / Yaş Grubu")
+                }
+                else if (categoryLower.Contains("süpermarket") || categoryLower.Contains("gıda"))
+                {
+                    @("Ürün Tipi / Hacim")
+                }
+                else
+                {
+                    @("Özellik")
+                }
+            </span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="filter-content">
+            <div class="filter-list">
+                @if (categoryLower.Contains("giyim") || categoryLower.Contains("aksesuar") || categoryLower.Contains("spor") || categoryLower.Contains("outdoor"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="XS"> <span>XS</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="S"> <span>S</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="M"> <span>M</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="L"> <span>L</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="XL"> <span>XL</span></label>
+                }
+                else if (categoryLower.Contains("ayakkabı") || categoryLower.Contains("çanta"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="38"> <span>38</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="40"> <span>40</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="42"> <span>42</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="44"> <span>44</span></label>
+                }
+                else if (categoryLower.Contains("elektronik") || categoryLower.Contains("teknoloji"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="6.1 inç"> <span>6.1 inç</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="6.7 inç"> <span>6.7 inç</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="13.3 inç"> <span>13.3 inç</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="15.6 inç"> <span>15.6 inç</span></label>
+                }
+                else if (categoryLower.Contains("ev") || categoryLower.Contains("dekorasyon") || categoryLower.Contains("mutfak"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Ahşap"> <span>Ahşap</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Metal"> <span>Metal</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Plastik"> <span>Plastik</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Porselen"> <span>Porselen</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Granit"> <span>Granit</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Çelik"> <span>Çelik</span></label>
+                }
+                else if (categoryLower.Contains("kozmetik") || categoryLower.Contains("bakım") || categoryLower.Contains("parfüm"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Kuru"> <span>Kuru Cilt</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Yağlı"> <span>Yağlı Cilt</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Karma"> <span>Karma Cilt</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Hassas"> <span>Hassas Cilt</span></label>
+                }
+                else if (categoryLower.Contains("kitap") || categoryLower.Contains("hobi") || categoryLower.Contains("oyuncak") || categoryLower.Contains("kırtasiye"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Roman"> <span>Roman</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Tarih"> <span>Tarih</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Çocuk"> <span>Çocuk Kitapları</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Hobi"> <span>Hobi</span></label>
+                }
+                else if (categoryLower.Contains("bebek"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="0-3 Ay"> <span>0-3 Ay</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="3-6 Ay"> <span>3-6 Ay</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="12-18 Ay"> <span>12-18 Ay</span></label>
+                }
+                else if (categoryLower.Contains("süpermarket") || categoryLower.Contains("gıda"))
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Organik"> <span>Organik</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Glütensiz"> <span>Glütensiz</span></label>
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Taze"> <span>Taze Gıda</span></label>
+                }
+                else
+                {
+                    <label class="filter-item"><input type="checkbox" class="size-filter" value="Standart"> <span>Standart</span></label>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Cinsiyet Filtresi (Sadece Belirli Kategorilerde) -->
+    @if (categoryLower.Contains("giyim") || categoryLower.Contains("aksesuar") || categoryLower.Contains("ayakkabı") || categoryLower.Contains("çanta") || categoryLower.Contains("bebek") || categoryLower.Contains("spor") || categoryLower.Contains("outdoor"))
+    {
+        <div class="filter-section">
+            <div class="filter-title">
+                <span>Cinsiyet</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="filter-content">
+                <div class="filter-list">
+                    <label class="filter-item"><input type="checkbox" class="gender-filter" value="Kadın"> <span>Kadın</span></label>
+                    <label class="filter-item"><input type="checkbox" class="gender-filter" value="Erkek"> <span>Erkek</span></label>
+                    <label class="filter-item"><input type="checkbox" class="gender-filter" value="Unisex"> <span>Unisex</span></label>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Renk Filter (Sadece Belirli Kategorilerde - Kozmetik, Kitap, Süpermarket hariç) -->
+    @if (!categoryLower.Contains("kozmetik") && !categoryLower.Contains("bakım") && !categoryLower.Contains("kitap") && !categoryLower.Contains("hobi") && !categoryLower.Contains("oyuncak") && !categoryLower.Contains("kırtasiye") && !categoryLower.Contains("süpermarket") && !categoryLower.Contains("gıda"))
+    {
+        <div class="filter-section">
+            <div class="filter-title">
+                <span>Renk</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="filter-content">
+                <div class="filter-list">
+                    <label class="filter-item">
+                        <input type="checkbox" class="color-filter" value="Siyah"> <span class="badge badge-dark rounded-circle mr-2" style="width:12px; height:12px;">&nbsp;</span> Siyah
+                    </label>
+                    <label class="filter-item">
+                        <input type="checkbox" class="color-filter" value="Beyaz"> <span class="badge badge-light border rounded-circle mr-2" style="width:12px; height:12px;">&nbsp;</span> Beyaz
+                    </label>
+                    <label class="filter-item">
+                        <input type="checkbox" class="color-filter" value="Mavi"> <span class="badge badge-primary rounded-circle mr-2" style="width:12px; height:12px;">&nbsp;</span> Mavi
+                    </label>
+                    <label class="filter-item">
+                        <input type="checkbox" class="color-filter" value="Kırmızı"> <span class="badge badge-danger rounded-circle mr-2" style="width:12px; height:12px;">&nbsp;</span> Kırmızı
+                    </label>
+                    <label class="filter-item">
+                        <input type="checkbox" class="color-filter" value="Sarı"> <span class="badge badge-warning rounded-circle mr-2" style="width:12px; height:12px;">&nbsp;</span> Sarı
+                    </label>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Accordion Toggle Logic
+        document.querySelectorAll('.filter-title').forEach(title => {
+            title.addEventListener('click', () => {
+                const section = title.parentElement;
+                section.classList.toggle('active');
+                const content = section.querySelector('.filter-content');
+                if (section.classList.contains('active')) {
+                    content.style.display = 'block';
+                } else {
+                    content.style.display = 'none';
+                }
+            });
+        });
+
+        // 2. Client-side Live Filtering Logic
+        const brandCheckboxes = document.querySelectorAll('.brand-filter');
+        const sizeCheckboxes = document.querySelectorAll('.size-filter');
+        const genderCheckboxes = document.querySelectorAll('.gender-filter');
+        const colorCheckboxes = document.querySelectorAll('.color-filter');
+        const priceMinInput = document.getElementById('priceMin');
+        const priceMaxInput = document.getElementById('priceMax');
+        const btnPriceApply = document.getElementById('btnPriceApply');
+        const brandSearchInput = document.getElementById('brandSearchInput');
+
+        // Brand local search
+        if (brandSearchInput) {
+            brandSearchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                const labels = document.querySelectorAll('.brand-filter');
+                labels.forEach(input => {
+                    const labelText = input.parentElement.innerText.toLowerCase();
+                    if (labelText.includes(query)) {
+                        input.parentElement.style.display = 'block';
+                    } else {
+                        input.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        function filterProducts() {
+            // Get selected brands
+            const selectedBrands = Array.from(document.querySelectorAll('.brand-filter:checked')).map(cb => cb.value.toLowerCase());
+            // Get selected sizes
+            const selectedSizes = Array.from(document.querySelectorAll('.size-filter:checked')).map(cb => cb.value.toLowerCase());
+            // Get selected genders
+            const selectedGenders = Array.from(document.querySelectorAll('.gender-filter:checked')).map(cb => cb.value.toLowerCase());
+            // Get selected colors
+            const selectedColors = Array.from(document.querySelectorAll('.color-filter:checked')).map(cb => cb.value.toLowerCase());
+
+            // Get prices
+            const minPrice = parseFloat(priceMinInput.value) || 0;
+            const maxPrice = parseFloat(priceMaxInput.value) || Infinity;
+
+            const products = document.querySelectorAll('.product-item');
+            let visibleCount = 0;
+
+            products.forEach(product => {
+                const brand = (product.getAttribute('data-brand') || '').toLowerCase().trim();
+                const size = (product.getAttribute('data-size') || '').toLowerCase().trim();
+                const gender = (product.getAttribute('data-gender') || '').toLowerCase().trim();
+                const color = (product.getAttribute('data-color') || '').toLowerCase().trim();
+                const price = parseFloat(product.getAttribute('data-price')) || 0;
+
+                let isVisible = true;
+
+                if (selectedBrands.length > 0 && !selectedBrands.includes(brand)) {
+                    isVisible = false;
+                }
+                if (selectedSizes.length > 0 && !selectedSizes.includes(size)) {
+                    isVisible = false;
+                }
+                if (selectedGenders.length > 0 && !selectedGenders.includes(gender)) {
+                    isVisible = false;
+                }
+                if (selectedColors.length > 0 && !selectedColors.includes(color)) {
+                    isVisible = false;
+                }
+                if (price < minPrice || price > maxPrice) {
+                    isVisible = false;
+                }
+
+                if (isVisible) {
+                    product.style.setProperty('display', 'block', 'important');
+                    visibleCount++;
+                } else {
+                    product.style.setProperty('display', 'none', 'important');
+                }
+            });
+
+            // Dynamically update the count if count component exists
+            const countSpan = document.getElementById('displayed-product-count');
+            if (countSpan) {
+                countSpan.innerText = visibleCount;
+            }
+        }
+
+        // Add event listeners for dynamic instant filtering
+        brandCheckboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+        sizeCheckboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+        genderCheckboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+        colorCheckboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+        
+        if (btnPriceApply) {
+            btnPriceApply.addEventListener('click', function(e) {
+                e.preventDefault();
+                filterProducts();
+            });
+        }
+    });
+</script>

@@ -1,0 +1,14 @@
+@model GetByIdProductDetailDto
+<div>
+    <h5 class="mb-3 font-weight-bold" style="color: #f27a1a;">📌 Ürün Açıklaması</h5>
+    <p style="font-size: 14px; line-height: 1.8; color: #334155;">@Html.Raw(Model?.ProductDescription?.Replace("\n", "<br/>"))</p>
+    
+    <div class="mt-4">
+        <h6 class="font-weight-bold mb-3">Öne Çıkan Özellikler</h6>
+        <ul class="list-unstyled" style="font-size: 14px; line-height: 1.8; color: #334155;">
+            <li><i class="fas fa-check text-success mr-2"></i> Kaliteli malzeme yapısı ile uzun ömürlü kullanım sunar.</li>
+            <li><i class="fas fa-check text-success mr-2"></i> Ergonomik tasarımı sayesinde günlük kullanıma uygundur.</li>
+            <li><i class="fas fa-check text-success mr-2"></i> Kolay temizlenebilir yüzey.</li>
+        </ul>
+    </div>
+</div>

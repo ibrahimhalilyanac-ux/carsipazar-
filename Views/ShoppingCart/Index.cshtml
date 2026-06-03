@@ -1,0 +1,218 @@
+@{
+    ViewData["Title"] = "Sepetim";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+@if (ViewBag.total == null || ViewBag.total == 0)
+{
+    <style>
+        .empty-cart-card {
+            background: #fff;
+            border: 1.5px solid #ebebeb;
+            border-radius: 16px;
+            padding: 32px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            margin: 40px auto;
+            max-width: 1000px;
+            width: 100%;
+            animation: fadeInUp 0.4s ease;
+        }
+        
+        .empty-cart-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .empty-cart-icon-circle {
+            width: 72px;
+            height: 72px;
+            background: #fff3eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff5a00;
+            font-size: 30px;
+            box-shadow: 0 4px 12px rgba(255, 90, 0, 0.1);
+        }
+
+        .empty-cart-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .empty-cart-btn {
+            background: #ff5a00;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(255, 90, 0, 0.25);
+            display: inline-block;
+        }
+
+        .empty-cart-btn:hover {
+            background: #e04f00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 90, 0, 0.35);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .empty-cart-btn:active {
+            transform: translateY(0);
+        }
+
+        @@keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @@media (max-width: 768px) {
+            .empty-cart-card {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+                padding: 30px 20px;
+            }
+            .empty-cart-left {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="empty-cart-card">
+            <div class="empty-cart-left">
+                <div class="empty-cart-icon-circle">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h4 class="empty-cart-text">Sepetinizde ürün bulunmamaktadır.</h4>
+            </div>
+            <a href="/Default/Index/" class="empty-cart-btn">Alışverişe Başla</a>
+        </div>
+    </div>
+}
+else
+{
+    <style>
+        /* Modern Premium Shopping Cart Aesthetics */
+        .cart-item-row {
+            transition: background-color 0.25s ease;
+        }
+        .cart-item-row:hover {
+            background-color: #fafbfc !important;
+        }
+        .hover-red {
+            color: #94a3b8;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .hover-red:hover {
+            color: #ef4444 !important;
+            transform: scale(1.05);
+        }
+        .product-brand-title {
+            color: #1e293b;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            font-size: 11px;
+            background-color: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .btn-sepeti-onayla {
+            box-shadow: 0 4px 12px rgba(11, 193, 92, 0.25);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-sepeti-onayla:hover {
+            background-color: #09a24d !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(11, 193, 92, 0.35);
+            color: #fff !important;
+            text-decoration: none;
+        }
+        .btn-sepeti-onayla:active {
+            transform: translateY(0);
+        }
+        .quantity-pill-btn {
+            color: #64748b;
+            text-decoration: none;
+            padding: 2px 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quantity-pill-btn:hover {
+            color: #f27a1a !important;
+            transform: scale(1.15);
+            text-decoration: none;
+        }
+        .custom-control-label::before, 
+        .custom-control-label::after {
+            top: 0.1rem !important;
+        }
+        
+        .related-products-wrapper h2.section-title { display: none !important; }
+        .related-products-wrapper .container-fluid { padding: 0 !important; }
+        .related-products-wrapper .row { flex-wrap: nowrap !important; overflow-x: auto !important; padding-bottom: 15px; scroll-behavior: smooth; }
+        .related-products-wrapper .col-lg-3 { flex: 0 0 auto !important; width: auto !important; min-width: 250px; }
+        .related-products-wrapper .row::-webkit-scrollbar { height: 0px; }
+
+        /* Arrow Button Styling */
+        .slider-wrapper { position: relative; }
+        .slider-btn { 
+            position: absolute; top: 55%; transform: translateY(-50%); z-index: 10; 
+            width: 40px; height: 40px; border-radius: 50%; background: white; border: 1px solid #e2e8f0; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; color: #333; transition: all 0.3s; 
+        }
+        .slider-btn:hover { background: #f27a1a; color: white; border-color: #f27a1a; }
+        .slider-btn-left { left: 15px; }
+        .slider-btn-right { right: 15px; }
+    </style>
+
+    <div class="container-fluid pb-5 pt-4">
+        <div class="row px-xl-5">
+
+            @await Component.InvokeAsync("_ShoppingCartProductListComponentPartial")
+
+            @await Html.PartialAsync("~/Views/Discount/ConfirmDiscountCoupon.cshtml")
+            
+        </div>
+
+        <!-- Önerilen Ürünler Slider -->
+        <div class="row px-xl-5 mt-5 slider-wrapper related-products-wrapper">
+            <div class="col-12">
+                <div class="border-bottom pb-2 mb-4 d-flex justify-content-between align-items-center">
+                    <h4 class="font-weight-bold m-0 text-dark" style="font-size: 20px;">Sizin İçin Önerilenler</h4>
+                </div>
+                <div class="slider-btn slider-btn-left" onclick="scrollSlider(this, -300)"><i class="fas fa-chevron-left"></i></div>
+                <div class="slider-btn slider-btn-right" onclick="scrollSlider(this, 300)"><i class="fas fa-chevron-right"></i></div>
+                @await Component.InvokeAsync("_FeatureProductsDefaultComponentPartial")
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function scrollSlider(btn, amount) {
+            const wrapper = btn.closest('.slider-wrapper');
+            const row = wrapper.querySelector('.row');
+            if(row) {
+                row.scrollBy({ left: amount, behavior: 'smooth' });
+            }
+        }
+    </script>
+}

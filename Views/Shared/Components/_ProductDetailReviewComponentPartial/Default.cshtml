@@ -1,0 +1,55 @@
+@model List<ResultCommentDto>
+@{
+    var commentList = Model ?? new List<ResultCommentDto>();
+}
+
+<div>
+    <!-- Üst Puan Özeti -->
+    <div class="d-flex align-items-center mb-4 p-3 bg-light rounded" style="border: 1px solid #f1f5f9;">
+        <div class="text-warning mr-3" style="font-size: 24px;">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+        </div>
+        <div class="font-weight-bold text-dark mr-3" style="font-size: 24px;">4.3 <span class="text-muted" style="font-size: 16px; font-weight: normal;">/ 5</span></div>
+        <div class="text-muted" style="font-size: 14px;">- @commentList.Count Değerlendirme</div>
+    </div>
+
+    <!-- Yorum Kartları -->
+    <div class="row">
+        @foreach(var item in commentList)
+        {
+            <div class="col-md-6 mb-3">
+                <div class="p-3 bg-white h-100" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="text-warning" style="font-size: 12px;">
+                            @for(int i=0; i<item.Rating; i++) {
+                                <i class="fas fa-star"></i>
+                            }
+                            @for(int i=item.Rating; i<5; i++) {
+                                <i class="far fa-star"></i>
+                            }
+                        </div>
+                        <span class="text-muted" style="font-size: 11px;">@item.CreatedDate.ToShortDateString()</span>
+                    </div>
+                    
+                    <p class="text-dark mb-3" style="font-size: 13px; line-height: 1.5; min-height: 40px;">
+                        @item.CommentDetail
+                    </p>
+                    
+                    <div class="d-flex align-items-center mt-auto pt-2" style="border-top: 1px solid #f1f5f9;">
+                        <img referrerpolicy="no-referrer" src="@item.ImageUrl" alt="User" class="rounded-circle mr-2" style="width: 24px; height: 24px; object-fit: cover;">
+                        <span class="text-muted" style="font-size: 12px;">@item.NameSurname <i class="fas fa-check-circle text-success ml-1" title="Ürünü satın aldı"></i></span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="mt-4 border-top pt-4">
+        <h5 class="font-weight-bold mb-3">Yorum Yap</h5>
+        @await Html.PartialAsync("~/Views/ProductList/AddComment.cshtml",new {id=ViewBag.x})
+    </div>
+</div>

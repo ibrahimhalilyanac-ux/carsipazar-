@@ -1,0 +1,92 @@
+@model List<ResultProductWithCategoryDto>
+
+@foreach (var item in Model)
+{
+    string brand = "";
+    string size = "";
+    string gender = "";
+    string color = "";
+    
+    // Parse filters from description if present
+    if (!string.IsNullOrEmpty(item.ProductDescription) && item.ProductDescription.Contains("<!--Filters:"))
+    {
+        try
+        {
+            int startIndex = item.ProductDescription.IndexOf("<!--Filters:") + "<!--Filters:".Length;
+            int endIndex = item.ProductDescription.IndexOf("-->", startIndex);
+            if (endIndex > startIndex)
+            {
+                string filterStr = item.ProductDescription.Substring(startIndex, endIndex - startIndex);
+                var parts = filterStr.Split(';');
+                foreach (var part in parts)
+                {
+                    var kv = part.Split('=');
+                    if (kv.Length == 2)
+                    {
+                        string key = kv[0].Trim().ToLower();
+                        string val = kv[1].Trim();
+                        if (key == "brand") brand = val;
+                        else if (key == "size") size = val;
+                        else if (key == "gender") gender = val;
+                        else if (key == "color") color = val;
+                    }
+                }
+            }
+        }
+        catch {}
+    }
+
+    <div class="col-lg-4 col-md-6 col-sm-6 mb-4 product-item" 
+         data-price="@item.ProductPrice.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+         data-brand="@brand"
+         data-size="@size"
+         data-gender="@gender"
+         data-color="@color">
+        <div class="trendyol-product-card shadow-sm">
+            <!-- Badge & Favorite -->
+            @if (new Random().Next(1, 10) > 7)
+            {
+                <div class="product-badge badge-new">YENİ ÜRÜN</div>
+            }
+            else if (new Random().Next(1, 10) > 5)
+            {
+                <div class="product-badge badge-best">EN ÇOK SATAN</div>
+            }
+
+            <button class="product-favorite-btn favorite-btn-@item.ProductId" data-product-id="@item.ProductId" onclick="toggleFavorite('@item.ProductId')">
+                <i class="far fa-heart"></i>
+            </button>
+
+            <!-- Image Area -->
+            <a href="/ProductList/ProductDetail/@item.ProductId" class="product-image-wrapper">
+                <img src="@item.ProductImageUrl" alt="@item.ProductName" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://via.placeholder.com/300x300?text=Resim+Yok';">
+            </a>
+
+            <!-- Info Area -->
+            <div class="product-info">
+                <div class="product-name-container">
+                    <span class="product-brand">@(item.Category?.CategoryName ?? "ÇarşıPazar")</span>
+                    <span class="product-name">@item.ProductName</span>
+                </div>
+
+                <div class="product-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <span>(124)</span>
+                </div>
+
+                <div class="product-price-container">
+                    <div class="product-price">@item.ProductPrice.ToString("N0") TL</div>
+                    <div class="product-shipping-badge">Hızlı Teslimat</div>
+                </div>
+
+                <button onclick="event.preventDefault(); addToCart('@item.ProductId')" class="btn-add-to-cart-simple text-center mt-2" style="width: 100%; border: none; cursor: pointer;">
+                    Sepete Ekle
+                </button>
+            </div>
+        </div>
+    </div>
+}

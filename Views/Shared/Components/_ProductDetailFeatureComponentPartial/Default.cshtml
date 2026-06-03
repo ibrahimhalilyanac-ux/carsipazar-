@@ -1,0 +1,143 @@
+@model UpdateProductDto
+<div class="col-lg-7 h-auto mb-30">
+    <div class="row h-100">
+        <!-- Orta Alan: Ürün Bilgileri -->
+        <div class="col-lg-7">
+            <div class="bg-light p-4 h-100" style="border-radius: 8px;">
+                <h3 class="font-weight-bold text-dark mb-2" style="font-size: 22px;">@Model.ProductName</h3>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-warning mr-2" style="font-size: 14px;">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <a href="#reviews" class="text-muted" style="font-size: 13px; text-decoration: underline;">124 Değerlendirme</a>
+                    <span class="mx-2 text-muted">|</span>
+                    <a href="#qa" class="text-muted" style="font-size: 13px; text-decoration: underline;">45 Soru & Cevap</a>
+                </div>
+                
+                <h2 class="font-weight-bold mb-4" style="color: #f27a1a; font-size: 28px;">₺ @Model.ProductPrice</h2>
+                
+                @{
+                    string category = ViewBag.CategoryName ?? "Diğer";
+                    string prodName = Model.ProductName ?? "";
+                }
+
+                @if (category == "Giyim & Aksesuar" || category == "Ayakkabı & Çanta" || category == "Ev & Dekorasyon" || category == "Spor & Outdoor" || category == "Mutfak Gereçleri" || category == "Anne & Bebek" || category == "Elektronik & Teknoloji")
+                {
+                    <div class="mb-4">
+                        <strong class="text-dark d-block mb-2" style="font-size: 14px;">Renk/Seçenek:</strong>
+                        <div class="d-flex flex-wrap gap-2">
+                            <!-- Dummy color options -->
+                            <div class="border p-1 mr-2 mb-2 rounded border-primary" style="cursor: pointer;">
+                                <img src="/img/product-1.jpg" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" alt="Renk 1">
+                            </div>
+                            <div class="border p-1 mr-2 mb-2 rounded" style="cursor: pointer;">
+                                <img src="/img/product-2.jpg" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" alt="Renk 2">
+                            </div>
+                            <div class="border p-1 mr-2 mb-2 rounded" style="cursor: pointer;">
+                                <img src="/img/product-3.jpg" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" alt="Renk 3">
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="mb-4">
+                    <strong class="text-dark d-block mb-2" style="font-size: 14px;">Adet:</strong>
+                    <div class="input-group quantity" style="width: 130px;">
+                        <div class="input-group-btn">
+                            <button class="btn btn-outline-secondary btn-minus" style="border-color: #e2e8f0;">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="quantity-@Model.ProductId" class="form-control text-center font-weight-bold" value="1" style="border-color: #e2e8f0; border-left: none; border-right: none;">
+                        <div class="input-group-btn">
+                            <button class="btn btn-outline-secondary btn-plus" style="border-color: #e2e8f0;">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-4">
+                    <button class="btn font-weight-bold px-4 py-3 flex-fill mr-2" style="background-color: #fff; color: #f27a1a; border: 1px solid #f27a1a; border-radius: 8px; font-size: 16px;" onclick="event.preventDefault(); window.location.href='/ShoppingCart/AddBasketItemAndCheckout/@Model.ProductId?quantity=' + document.getElementById('quantity-@Model.ProductId').value;">
+                        Şimdi Al
+                    </button>
+                    <button class="btn font-weight-bold px-4 py-3 flex-fill mr-2" style="background-color: #f27a1a; color: #fff; border: none; border-radius: 8px; font-size: 16px;" onclick="event.preventDefault(); addToCart('@Model.ProductId', document.getElementById('quantity-@Model.ProductId').value)">
+                        Sepete Ekle
+                    </button>
+                    <button class="btn bg-white px-3 py-3" style="border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b;" onclick="event.preventDefault(); toggleFavorite('@Model.ProductId', this)">
+                        <i class="far fa-heart" style="font-size: 20px;"></i>
+                    </button>
+                </div>
+                
+                <div class="bg-white p-3 rounded mb-3" style="border: 1px solid #e2e8f0; font-size: 13px;">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-truck text-success mr-2"></i>
+                        <span class="text-dark font-weight-bold">Tahmini Teslimat:</span>
+                        <span class="ml-2 text-muted">Yarın kargoda!</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-gift text-warning mr-2"></i>
+                        <span class="text-dark font-weight-bold">Hediye Paketi:</span>
+                        <span class="ml-2 text-muted">Bu üründe hediye paketi yaptırabilirsiniz.</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h6 class="font-weight-bold text-dark mb-3">Öne Çıkan Özellikler:</h6>
+                    <ul class="list-unstyled text-muted" style="font-size: 13px; line-height: 1.8;">
+                        <li><i class="fas fa-check text-success mr-2"></i> Bu ürün <strong>ÇarşıPazar</strong> tarafından gönderilecektir.</li>
+                        <li><i class="fas fa-check text-success mr-2"></i> Kampanya fiyatından satılmak üzere 100 adetten fazla stok sunulmuştur.</li>
+                        <li><i class="fas fa-check text-success mr-2"></i> 15 gün içinde ücretsiz iade. Detaylı bilgi için tıklayın.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Alan: Satıcı Buybox -->
+        <div class="col-lg-5">
+            <div class="bg-white p-3 h-100" style="border: 1px solid #e2e8f0; border-radius: 8px;">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid #f1f5f9;">
+                    <div>
+                        <span class="d-block text-muted" style="font-size: 11px;">Satıcı:</span>
+                        <a href="#" class="font-weight-bold text-dark" style="font-size: 15px;">ÇarşıPazar Official <i class="fas fa-check-circle text-primary" style="font-size: 12px;"></i></a>
+                    </div>
+                    <div class="bg-success text-white px-2 py-1 rounded font-weight-bold" style="font-size: 13px;">
+                        9.8
+                    </div>
+                </div>
+                
+                <ul class="list-unstyled mb-4" style="font-size: 13px;">
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fas fa-shield-alt text-muted mt-1 mr-2" style="width: 16px;"></i>
+                        <div>
+                            <strong class="d-block text-dark">ÇarşıPazar Güvencesi</strong>
+                            <span class="text-muted" style="font-size: 12px;">Orijinal ürün, güvenli ödeme.</span>
+                        </div>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fas fa-undo text-muted mt-1 mr-2" style="width: 16px;"></i>
+                        <div>
+                            <strong class="d-block text-dark">Kolay İade</strong>
+                            <span class="text-muted" style="font-size: 12px;">Koşulsuz şartsız iade hakkı.</span>
+                        </div>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fas fa-headset text-muted mt-1 mr-2" style="width: 16px;"></i>
+                        <div>
+                            <strong class="d-block text-dark">7/24 Destek</strong>
+                            <span class="text-muted" style="font-size: 12px;">Müşteri hizmetleri yanınızda.</span>
+                        </div>
+                    </li>
+                </ul>
+                
+                <button class="btn btn-outline-secondary btn-block py-2 font-weight-bold" style="border-radius: 6px; font-size: 14px;">
+                    Mağazaya Git <i class="fas fa-chevron-right ml-1" style="font-size: 12px;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

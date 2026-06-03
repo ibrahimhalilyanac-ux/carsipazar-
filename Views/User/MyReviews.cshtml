@@ -1,0 +1,299 @@
+@model List<ResultCommentDto>
+@{
+    ViewData["Title"] = "Değerlendirmelerim";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<div class="profile-container">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar shadow-sm">
+                    <div class="sidebar-header">
+                        <h4>Hesabım</h4>
+                        <small class="text-muted">Profil</small>
+                    </div>
+                    
+                    <div class="sidebar-section-title">Siparişlerim</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/MyOrders"><i class="fas fa-box"></i> Tüm Siparişlerim</a></li>
+                        <li class="sidebar-menu-item active"><a href="/User/MyReviews"><i class="fas fa-star"></i> Değerlendirmelerim</a></li>
+                    </ul>
+
+                    <div class="sidebar-section-title">Hesabım & Yardım</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/Index"><i class="fas fa-user"></i> Kullanıcı Bilgilerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyAddress"><i class="fas fa-map-marker-alt"></i> Adres Bilgilerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyCards"><i class="fas fa-credit-card"></i> Kayıtlı Kartlarım</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyPassword"><i class="fas fa-lock"></i> Şifre Değişikliği</a></li>
+                        <li class="sidebar-menu-item text-danger"><a href="/Login/LogOut"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <style>
+                    .reviews-card {
+                        background: #fff;
+                        border: 1px solid #e0e0e0;
+                        border-radius: 6px;
+                        margin-bottom: 15px;
+                    }
+                    .reviews-header {
+                        padding: 15px 20px;
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: #333;
+                    }
+                    .reviews-tabs {
+                        display: flex;
+                        border-bottom: 1px solid #e0e0e0;
+                        padding: 0 10px;
+                    }
+                    .reviews-tab {
+                        padding: 15px 20px;
+                        color: #666;
+                        font-weight: 600;
+                        cursor: pointer;
+                        text-decoration: none;
+                        font-size: 14px;
+                    }
+                    .reviews-tab:hover {
+                        color: #f27a1a;
+                        text-decoration: none;
+                    }
+                    .reviews-tab.active {
+                        color: #f27a1a;
+                        border-bottom: 2px solid #f27a1a;
+                    }
+                    .reviews-filters {
+                        padding: 15px 20px;
+                        display: flex;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    }
+                    .filter-pill {
+                        padding: 6px 16px;
+                        border: 1px solid #e0e0e0;
+                        border-radius: 20px;
+                        color: #666;
+                        font-size: 13px;
+                        text-decoration: none;
+                        background: #fff;
+                    }
+                    .filter-pill:hover {
+                        text-decoration: none;
+                        color: #f27a1a;
+                    }
+                    .filter-pill.active {
+                        color: #f27a1a;
+                        border-color: #f27a1a;
+                    }
+                    .empty-state-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 80px 20px;
+                        text-align: center;
+                    }
+                    .empty-state-icon {
+                        width: 70px;
+                        height: 70px;
+                        background: #f5f5f5;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                        position: relative;
+                    }
+                    .empty-state-icon i {
+                        font-size: 28px;
+                        color: #999;
+                    }
+                    .empty-state-icon::before, .empty-state-icon::after {
+                        content: '';
+                        position: absolute;
+                        width: 4px;
+                        height: 4px;
+                        background-color: #ccc;
+                        border-radius: 50%;
+                    }
+                    .empty-state-icon::before { top: -10px; left: 20px; box-shadow: 30px 10px 0 #ccc; }
+                    .empty-state-icon::after { bottom: -10px; right: 20px; box-shadow: -30px -10px 0 #ccc; }
+                    
+                    .empty-state-text {
+                        color: #999;
+                        font-weight: 600;
+                        margin-bottom: 25px;
+                        font-size: 14px;
+                    }
+                    .btn-orange {
+                        background-color: #f27a1a;
+                        color: #fff;
+                        border: none;
+                        padding: 12px 40px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        font-size: 14px;
+                    }
+                    .btn-orange:hover {
+                        background-color: #d96811;
+                        color: #fff;
+                        text-decoration: none;
+                    }
+                </style>
+
+                <!-- Top Title Card -->
+                <div class="reviews-card">
+                    <div class="reviews-header">
+                        Değerlendirmelerim
+                    </div>
+                </div>
+
+                <!-- Main Reviews Card -->
+                <div class="reviews-card" style="min-height: 500px;">
+                    <div class="reviews-tabs">
+                        <a href="javascript:void(0)" class="reviews-tab active" data-target="urun">Ürün Değerlendirme</a>
+                        <a href="javascript:void(0)" class="reviews-tab" data-target="siparis">Sipariş Değerlendirme</a>
+                    </div>
+                    
+                    <!-- Ürün Değerlendirme İçeriği -->
+                    <div id="urun-content">
+                        <div class="reviews-filters">
+                            <a href="javascript:void(0)" class="filter-pill active" data-filter="degerlendir">Değerlendir</a>
+                            <a href="javascript:void(0)" class="filter-pill" data-filter="onaylanan">Onaylanan (@(Model?.Count(x => x.Status) ?? 0))</a>
+                            <a href="javascript:void(0)" class="filter-pill" data-filter="reddedilen">Reddedilen (@(Model?.Count(x => !x.Status) ?? 0))</a>
+                            <a href="javascript:void(0)" class="filter-pill" data-filter="gizlediklerim">Gizlediklerim (0)</a>
+                        </div>
+
+                        <div class="list-group p-3" id="comments-list" style="display: none;">
+                            @if(Model != null)
+                            {
+                                @foreach(var item in Model)
+                                {
+                                    <div class="list-group-item flex-column align-items-start mb-3 shadow-sm comment-item @(item.Status ? "onaylanan" : "reddedilen")" style="border-radius: 8px; border: 1px solid #eee; display: none;">
+                                        <div class="d-flex w-100 justify-content-between mb-2">
+                                            <h5 class="mb-1 text-dark">
+                                                @for(int i = 0; i < item.Rating; i++)
+                                                {
+                                                    <i class="fas fa-star" style="color: #ffc107; font-size: 14px;"></i>
+                                                }
+                                                @for(int i = item.Rating; i < 5; i++)
+                                                {
+                                                    <i class="far fa-star" style="color: #ccc; font-size: 14px;"></i>
+                                                }
+                                            </h5>
+                                            <small class="text-muted">@item.CreatedDate.ToString("dd MMM yyyy")</small>
+                                        </div>
+                                        <p class="mb-1" style="font-size: 15px;">@item.CommentDetail</p>
+                                        <small class="@(item.Status ? "text-success" : "text-danger")"><i class="fas @(item.Status ? "fa-check-circle" : "fa-times-circle")"></i> @(item.Status ? "Yayında" : "Reddedildi / Onay Bekliyor")</small>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <div class="empty-state-container" id="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="far fa-comment-alt"></i>
+                            </div>
+                            <div class="empty-state-text" id="empty-state-text">
+                                Değerlendirilecek Ürününüz Bulunmamaktadır.
+                            </div>
+                            <a href="/ProductList/Index" class="btn-orange">Alışverişe Devam Et</a>
+                        </div>
+                    </div>
+
+                    <!-- Sipariş Değerlendirme İçeriği (Şimdilik Boş State) -->
+                    <div id="siparis-content" style="display: none;">
+                        <div class="empty-state-container">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <div class="empty-state-text">
+                                Değerlendirilecek Siparişiniz Bulunmamaktadır.
+                            </div>
+                            <a href="/ProductList/Index" class="btn-orange">Alışverişe Devam Et</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Ürün / Sipariş Sekmeleri (Tabs)
+                    const tabs = document.querySelectorAll('.reviews-tab');
+                    const urunContent = document.getElementById('urun-content');
+                    const siparisContent = document.getElementById('siparis-content');
+
+                    tabs.forEach(tab => {
+                        tab.addEventListener('click', function () {
+                            // Aktif sınıfı değiştir
+                            tabs.forEach(t => t.classList.remove('active'));
+                            this.classList.add('active');
+
+                            const target = this.getAttribute('data-target');
+                            if (target === 'urun') {
+                                urunContent.style.display = 'block';
+                                siparisContent.style.display = 'none';
+                            } else {
+                                urunContent.style.display = 'none';
+                                siparisContent.style.display = 'block';
+                            }
+                        });
+                    });
+
+                    // Filtreleme Tuşları (Pills)
+                    const pills = document.querySelectorAll('.filter-pill');
+                    const emptyState = document.getElementById('empty-state');
+                    const emptyStateText = document.getElementById('empty-state-text');
+                    const commentsList = document.getElementById('comments-list');
+                    const commentItems = document.querySelectorAll('.comment-item');
+
+                    pills.forEach(pill => {
+                        pill.addEventListener('click', function () {
+                            // Remove active class from all pills
+                            pills.forEach(p => p.classList.remove('active'));
+                            // Add active class to clicked pill
+                            this.classList.add('active');
+
+                            const filter = this.getAttribute('data-filter');
+
+                            if (filter === 'degerlendir' || filter === 'gizlediklerim') {
+                                // Show empty state
+                                emptyState.style.display = 'flex';
+                                emptyStateText.innerText = filter === 'degerlendir' ? 'Değerlendirilecek Ürününüz Bulunmamaktadır.' : 'Gizlenmiş Değerlendirmeniz Bulunmamaktadır.';
+                                commentsList.style.display = 'none';
+                            } else {
+                                // Filter comments
+                                let hasVisible = false;
+                                commentItems.forEach(item => {
+                                    if (item.classList.contains(filter)) {
+                                        item.style.display = 'flex';
+                                        hasVisible = true;
+                                    } else {
+                                        item.style.display = 'none';
+                                    }
+                                });
+
+                                if (!hasVisible) {
+                                    commentsList.style.display = 'none';
+                                    emptyState.style.display = 'flex';
+                                    emptyStateText.innerText = filter === 'onaylanan' ? 'Onaylanan Değerlendirmeniz Bulunmamaktadır.' : 'Reddedilen Değerlendirmeniz Bulunmamaktadır.';
+                                } else {
+                                    emptyState.style.display = 'none';
+                                    commentsList.style.display = 'block';
+                                }
+                            }
+                        });
+                    });
+                });
+            </script>
+        </div>
+    </div>
+</div>

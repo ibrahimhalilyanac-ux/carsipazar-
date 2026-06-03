@@ -1,0 +1,474 @@
+@model List<ResultOrderingByUserIdDto>
+@{
+    ViewData["Title"] = "Siparişlerim";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<div class="profile-container">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar shadow-sm">
+                    <div class="sidebar-header">
+                        <h4>Hesabım</h4>
+                        <small class="text-muted">Profil</small>
+                    </div>
+                    
+                    <div class="sidebar-section-title">Siparişlerim</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item active"><a href="/User/MyOrders"><i class="fas fa-box"></i> Tüm Siparişlerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyReviews"><i class="fas fa-star"></i> Değerlendirmelerim</a></li>
+                    </ul>
+
+                    <div class="sidebar-section-title">Hesabım & Yardım</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/Index"><i class="fas fa-user"></i> Kullanıcı Bilgilerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyAddress"><i class="fas fa-map-marker-alt"></i> Adres Bilgilerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyCards"><i class="fas fa-credit-card"></i> Kayıtlı Kartlarım</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyPassword"><i class="fas fa-lock"></i> Şifre Değişikliği</a></li>
+                        <li class="sidebar-menu-item text-danger"><a href="/Login/LogOut"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <style>
+                    .orders-card {
+                        background: #fff;
+                        border: 1px solid #e2e2e2;
+                        border-radius: 8px;
+                        margin-bottom: 20px;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+                    }
+                    .orders-header {
+                        padding: 20px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        border-bottom: 1px solid #f2f2f2;
+                    }
+                    .orders-title {
+                        font-size: 20px;
+                        font-weight: 700;
+                        color: #333;
+                        margin: 0;
+                    }
+                    .search-wrapper {
+                        position: relative;
+                        width: 320px;
+                    }
+                    .search-input {
+                        width: 100%;
+                        padding: 10px 15px 10px 40px;
+                        background: #f5f5f5;
+                        border: 1px solid transparent;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        color: #333;
+                        outline: none;
+                        transition: all 0.2s ease;
+                    }
+                    .search-input:focus {
+                        background: #fff;
+                        border-color: #f27a1a;
+                        box-shadow: 0 0 0 3px rgba(242, 122, 26, 0.1);
+                    }
+                    .search-icon {
+                        position: absolute;
+                        left: 15px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        color: #f27a1a;
+                        font-size: 16px;
+                    }
+                    .filters-row {
+                        padding: 15px 20px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 15px;
+                    }
+                    .pills-container {
+                        display: flex;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    }
+                    .order-pill {
+                        padding: 8px 18px;
+                        border: 1px solid #dcdcdc;
+                        border-radius: 25px;
+                        color: #555;
+                        font-size: 14px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        background: #fff;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    }
+                    .order-pill:hover {
+                        border-color: #f27a1a;
+                        color: #f27a1a;
+                        text-decoration: none;
+                    }
+                    .order-pill.active {
+                        border-color: #f27a1a;
+                        color: #f27a1a;
+                        background: #fff;
+                    }
+                    .date-filter-select {
+                        padding: 8px 30px 8px 15px;
+                        border: 1px solid #dcdcdc;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        color: #555;
+                        background-color: #fff;
+                        outline: none;
+                        cursor: pointer;
+                        appearance: none;
+                        -webkit-appearance: none;
+                        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+                        background-repeat: no-repeat;
+                        background-position: right 10px center;
+                        background-size: 14px;
+                    }
+                    .date-filter-select:focus {
+                        border-color: #f27a1a;
+                    }
+                    
+                    /* Order Card Style */
+                    .order-item-card {
+                        background: #fff;
+                        border: 1px solid #e2e2e2;
+                        border-radius: 8px;
+                        margin-bottom: 20px;
+                        overflow: hidden;
+                        transition: all 0.2s ease;
+                    }
+                    .order-item-card:hover {
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                    }
+                    .order-item-header {
+                        background: #fafafa;
+                        border-bottom: 1px solid #eee;
+                        padding: 15px 20px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 15px;
+                    }
+                    .order-header-info {
+                        display: flex;
+                        gap: 30px;
+                        flex-wrap: wrap;
+                    }
+                    .info-group {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .info-label {
+                        font-size: 12px;
+                        color: #777;
+                        margin-bottom: 4px;
+                        font-weight: 500;
+                    }
+                    .info-value {
+                        font-size: 14px;
+                        color: #333;
+                        font-weight: 600;
+                    }
+                    .order-detail-btn {
+                        padding: 6px 15px;
+                        border: 1px solid #dcdcdc;
+                        border-radius: 4px;
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: #f27a1a;
+                        background: #fff;
+                        text-decoration: none;
+                        transition: all 0.2s ease;
+                    }
+                    .order-detail-btn:hover {
+                        background: #fff3eb;
+                        border-color: #f27a1a;
+                        color: #f27a1a;
+                        text-decoration: none;
+                    }
+                    .order-item-body {
+                        padding: 20px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 15px;
+                    }
+                    .order-product-info {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                    }
+                    .order-package-icon {
+                        width: 48px;
+                        height: 48px;
+                        background: #fdf5f0;
+                        border-radius: 8px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #f27a1a;
+                        font-size: 20px;
+                        border: 1px solid #fbe7db;
+                    }
+                    .order-status-desc {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .status-text {
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #27a745;
+                        margin-bottom: 2px;
+                    }
+                    .status-subtext {
+                        font-size: 13px;
+                        color: #666;
+                    }
+                    .order-action-btn {
+                        padding: 10px 20px;
+                        background: #f27a1a;
+                        color: #fff;
+                        border: none;
+                        border-radius: 4px;
+                        font-size: 13px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        transition: all 0.2s ease;
+                    }
+                    .order-action-btn:hover {
+                        background: #d96811;
+                        color: #fff;
+                        text-decoration: none;
+                    }
+
+                    /* Empty State */
+                    .empty-state-card {
+                        background: #fff;
+                        border: 1px solid #e2e2e2;
+                        border-radius: 8px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 100px 20px;
+                        text-align: center;
+                        min-height: 400px;
+                    }
+                    .empty-box-svg {
+                        margin-bottom: 20px;
+                    }
+                    .empty-state-message {
+                        font-size: 15px;
+                        font-weight: 500;
+                        color: #222;
+                        margin: 0;
+                    }
+                </style>
+
+                <!-- Title Card -->
+                <div class="orders-card">
+                    <div class="orders-header">
+                        <h2 class="orders-title">Siparişlerim</h2>
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="order-search" class="search-input" placeholder="Ürün veya marka adına göre ara">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters Row Card -->
+                <div class="orders-card">
+                    <div class="filters-row">
+                        <div class="pills-container">
+                            <a href="javascript:void(0)" class="order-pill active" data-status="all">Tümü</a>
+                            <a href="javascript:void(0)" class="order-pill" data-status="active">Devam Edenler</a>
+                            <a href="javascript:void(0)" class="order-pill" data-status="cancelled">İptaller</a>
+                            <a href="javascript:void(0)" class="order-pill" data-status="returned">İadeler</a>
+                        </div>
+                        <div>
+                            <select id="date-filter" class="date-filter-select">
+                                <option value="all">Tüm tarihler</option>
+                                <option value="30">Son 30 Gün</option>
+                                <option value="90">Son 3 Ay</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Container -->
+                <div id="orders-list-container">
+                    @if(Model != null && Model.Any())
+                    {
+                        @foreach(var item in Model)
+                        {
+                            <div class="order-item-card order-element" 
+                                 data-id="@item.OrderingId" 
+                                 data-date="@item.OrderDate.ToString("yyyy-MM-dd")" 
+                                 data-status="active">
+                                <div class="order-item-header">
+                                    <div class="order-header-info">
+                                        <div class="info-group">
+                                            <span class="info-label">Sipariş Tarihi</span>
+                                            <span class="info-value">@item.OrderDate.ToString("dd MMM yyyy HH:mm")</span>
+                                        </div>
+                                        <div class="info-group">
+                                            <span class="info-label">Sipariş Özeti</span>
+                                            <span class="info-value">#@item.OrderingId</span>
+                                        </div>
+                                        <div class="info-group">
+                                            <span class="info-label">Alıcı</span>
+                                            <span class="info-value">İbrahim Alışverişçi</span>
+                                        </div>
+                                        <div class="info-group">
+                                            <span class="info-label">Tutar</span>
+                                            <span class="info-value" style="color: #f27a1a;">@item.TotalPrice.ToString("N0") TL</span>
+                                        </div>
+                                    </div>
+                                    <a href="/User/MyReviews" class="order-detail-btn">Sipariş Detayı</a>
+                                </div>
+                                <div class="order-item-body">
+                                    <div class="order-product-info">
+                                        <div class="order-package-icon">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+                                        <div class="order-status-desc">
+                                            <span class="status-text">Hazırlanıyor</span>
+                                            <span class="status-subtext">Siparişiniz hazırlanmaktadır ve yakında kargoya verilecektir.</span>
+                                        </div>
+                                    </div>
+                                    <a href="/User/MyReviews" class="order-action-btn">Sipariş Değerlendir</a>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                    <!-- Empty State Card (Hidden by default if Model has items, shown if none match filters) -->
+                    <div class="empty-state-card" id="empty-state" style="@(Model != null && Model.Any() ? "display: none;" : "display: flex;")">
+                        <svg class="empty-box-svg" viewBox="0 0 64 64" width="80" height="80" stroke="#b5b5b5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                            <path d="M32 8 L54 19 L54 45 L32 56 L10 45 L10 19 Z" />
+                            <path d="M32 8 L32 31.5" />
+                            <path d="M10 19 L32 31.5 L54 19" />
+                            <path d="M32 31.5 L32 56" />
+                            <path d="M21 14.5 L43 27" stroke-dasharray="2,2" />
+                        </svg>
+                        <p class="empty-state-message">Şu anda vermiş olduğunuz sipariş bulunmamaktadır.</p>
+                    </div>
+                </div>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const searchInput = document.getElementById("order-search");
+                        const pills = document.querySelectorAll(".order-pill");
+                        const dateFilter = document.getElementById("date-filter");
+                        const orderCards = document.querySelectorAll(".order-element");
+                        const emptyState = document.getElementById("empty-state");
+
+                        let activeStatus = "all";
+                        let activeDateFilter = "all";
+                        let activeSearchQuery = "";
+
+                        // Filter Function
+                        function filterOrders() {
+                            let visibleCount = 0;
+
+                            orderCards.forEach(card => {
+                                const cardId = card.getAttribute("data-id").toLowerCase();
+                                const cardStatus = card.getAttribute("data-status");
+                                const cardDateStr = card.getAttribute("data-date");
+                                const cardDate = new Date(cardDateStr);
+                                const today = new Date();
+
+                                // 1. Status Filter
+                                let statusMatch = false;
+                                if (activeStatus === "all") {
+                                    statusMatch = true;
+                                } else if (activeStatus === "active" && cardStatus === "active") {
+                                    statusMatch = true;
+                                } else if (activeStatus === "cancelled" && cardStatus === "cancelled") {
+                                    statusMatch = true;
+                                } else if (activeStatus === "returned" && cardStatus === "returned") {
+                                    statusMatch = true;
+                                }
+
+                                // 2. Date Filter
+                                let dateMatch = false;
+                                if (activeDateFilter === "all") {
+                                    dateMatch = true;
+                                } else if (activeDateFilter === "30") {
+                                    const diffTime = Math.abs(today - cardDate);
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    if (diffDays <= 30) dateMatch = true;
+                                } else if (activeDateFilter === "90") {
+                                    const diffTime = Math.abs(today - cardDate);
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    if (diffDays <= 90) dateMatch = true;
+                                } else if (activeDateFilter === "2026") {
+                                    if (cardDate.getFullYear() === 2026) dateMatch = true;
+                                } else if (activeDateFilter === "2025") {
+                                    if (cardDate.getFullYear() === 2025) dateMatch = true;
+                                }
+
+                                // 3. Search Filter
+                                let searchMatch = false;
+                                if (activeSearchQuery === "" || cardId.includes(activeSearchQuery)) {
+                                    searchMatch = true;
+                                }
+
+                                // Show/Hide
+                                if (statusMatch && dateMatch && searchMatch) {
+                                    card.style.display = "block";
+                                    visibleCount++;
+                                } else {
+                                    card.style.display = "none";
+                                }
+                            });
+
+                            // Toggle Empty State
+                            if (visibleCount === 0) {
+                                emptyState.style.display = "flex";
+                            } else {
+                                emptyState.style.display = "none";
+                            }
+                        }
+
+                        // Search input listener
+                        searchInput.addEventListener("input", function () {
+                            activeSearchQuery = this.value.trim().toLowerCase();
+                            filterOrders();
+                        });
+
+                        // Pills click listener
+                        pills.forEach(pill => {
+                            pill.addEventListener("click", function () {
+                                pills.forEach(p => p.classList.remove("active"));
+                                this.classList.add("active");
+                                activeStatus = this.getAttribute("data-status");
+                                filterOrders();
+                            });
+                        });
+
+                        // Date filter dropdown listener
+                        dateFilter.addEventListener("change", function () {
+                            activeDateFilter = this.value;
+                            filterOrders();
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

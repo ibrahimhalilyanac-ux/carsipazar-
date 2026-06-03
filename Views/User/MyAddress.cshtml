@@ -1,0 +1,86 @@
+@model List<ResultOrderAddressDto>
+@{
+    ViewData["Title"] = "Adres Bilgilerim";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<div class="profile-container">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar shadow-sm">
+                    <div class="sidebar-header">
+                        <h4>Hesabım</h4>
+                        <small class="text-muted">Profil</small>
+                    </div>
+                    
+                    <div class="sidebar-section-title">Siparişlerim</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/MyOrders"><i class="fas fa-box"></i> Tüm Siparişlerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyReviews"><i class="fas fa-star"></i> Değerlendirmelerim</a></li>
+                    </ul>
+
+                    <div class="sidebar-section-title">Hesabım & Yardım</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item"><a href="/User/Index"><i class="fas fa-user"></i> Kullanıcı Bilgilerim</a></li>
+                        <li class="sidebar-menu-item active"><a href="/User/MyAddress"><i class="fas fa-map-marker-alt"></i> Adres Bilgilerim</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyCards"><i class="fas fa-credit-card"></i> Kayıtlı Kartlarım</a></li>
+                        <li class="sidebar-menu-item"><a href="/User/MyPassword"><i class="fas fa-lock"></i> Şifre Değişikliği</a></li>
+                        <li class="sidebar-menu-item text-danger"><a href="/Login/LogOut"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="profile-content shadow-sm">
+                    <div class="content-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2>Adres Bilgilerim</h2>
+                            <p class="text-muted mb-0">Kayıtlı teslimat adreslerinizi buradan yönetebilirsiniz.</p>
+                        </div>
+                        <a href="/User/AddAddress" class="btn btn-warning font-weight-bold"><i class="fas fa-plus"></i> Yeni Adres Ekle</a>
+                    </div>
+
+                    @if(Model != null && Model.Any())
+                    {
+                        <div class="row mt-4">
+                            @foreach(var item in Model)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="card shadow-sm h-100" style="border-radius: 8px; border: 1px solid #eee;">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h5 class="card-title text-dark font-weight-bold">@item.Name @item.Surname</h5>
+                                                <span class="badge badge-light p-2"><i class="fas fa-home"></i> Ev Adresi</span>
+                                            </div>
+                                            <p class="card-text text-muted mb-1"><i class="fas fa-phone-alt mr-2"></i>@item.Phone</p>
+                                            <p class="card-text text-muted mb-1"><i class="fas fa-envelope mr-2"></i>@item.Email</p>
+                                            <hr>
+                                            <p class="card-text font-weight-bold mb-1">@item.District / @item.City / @item.Country</p>
+                                            <p class="card-text text-muted small">@item.Detail1 @item.Detail2</p>
+                                            <p class="card-text text-muted small">Posta Kodu: @item.ZipCode</p>
+                                        </div>
+                                        <div class="card-footer bg-white border-top-0 d-flex justify-content-end pb-3">
+                                            <a href="/User/UpdateAddress/@item.AddressId" class="btn btn-sm btn-outline-secondary mr-2"><i class="fas fa-edit"></i> Düzenle</a>
+                                            <a href="/User/DeleteAddress/@item.AddressId" onclick="return confirm('Bu adresi silmek istediğinize emin misiniz?')" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Sil</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning mt-4 text-center">
+                            <i class="fas fa-map-marker-alt fa-3x mb-3 mt-2" style="color: #ffc107;"></i>
+                            <h5>Kayıtlı adresiniz bulunmamaktadır.</h5>
+                            <p>Siparişlerinizin size ulaşabilmesi için adres bilgisi eklemelisiniz.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

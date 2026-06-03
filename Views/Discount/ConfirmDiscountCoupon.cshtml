@@ -1,0 +1,82 @@
+<div class="col-lg-4">
+    <!-- Sepet Özeti Ana Kart -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden; border: 1px solid #f1f5f9; background-color: #fff;">
+        <div class="p-3 border-bottom bg-white">
+            <h5 class="font-weight-bold m-0 text-dark" style="font-size: 16px;">Sepet Özeti</h5>
+        </div>
+        <div class="card-body p-3">
+            <!-- Ara Toplam -->
+            <div class="d-flex justify-content-between mb-3" style="font-size: 13.5px;">
+                <span class="text-muted">Ara Toplam</span>
+                <span class="text-dark font-weight-bold">@((ViewBag.total * 1.5m).ToString("N2")) ₺</span>
+            </div>
+
+            <!-- Kargo Ücreti -->
+            <div class="d-flex justify-content-between mb-3" style="font-size: 13.5px;">
+                <span class="text-muted">Kargo Tutarı</span>
+                <div>
+                    <span class="text-muted text-decoration-line-through mr-1" style="text-decoration: line-through; font-size: 12px;">59,99 ₺</span>
+                    <span class="text-success font-weight-bold" style="padding: 2px 6px; background-color: #ecfdf5; border-radius: 4px; font-size: 12px;">Bedava</span>
+                </div>
+            </div>
+
+            <!-- İndirim ve Kazanç -->
+            <div class="d-flex justify-content-between mb-3 text-success" style="font-size: 13.5px; font-weight: 600;">
+                <span>Toplam Kazancın</span>
+                <span>-@((ViewBag.total * 0.5m).ToString("N2")) ₺</span>
+            </div>
+
+            <!-- Kargo Hızlı Teslimat Bilgisi -->
+            <div class="p-2 mb-3 d-flex align-items-start gap-2 rounded" style="font-size: 12px; border-left: 3px solid #0bc15c; color: #475569; background-color: #f8fafc;">
+                <i class="far fa-clock text-success mt-1 mr-2" style="font-size: 14px;"></i>
+                <div>
+                    <strong>7 saat 28 dakika</strong> içinde sipariş ver, ürünlerini <strong>hızlı teslim al!</strong>
+                </div>
+            </div>
+
+            <hr style="border-color: #f1f5f9; margin: 15px 0;">
+
+            <!-- Genel Toplam -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-dark font-weight-bold" style="font-size: 15px;">Toplam</span>
+                <span class="font-weight-bold" style="color: #f27a1a; font-size: 22px;">@ViewBag.totalNewPriceWithDiscount.ToString("N2") ₺</span>
+            </div>
+
+            <!-- İndirim Kuponu Bölümü -->
+            <div class="mb-3">
+                <form asp-controller="Discount" asp-action="ConfirmDiscountCoupon" method="post">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="code" value="@ViewBag.code" class="form-control border-0 p-3 bg-light" placeholder="İndirim Kodu Gir" style="border-radius: 6px 0 0 6px; font-size: 13px; height: 36px;">
+                        <div class="input-group-append">
+                            <button class="btn font-weight-bold" style="background-color: #e2e8f0; border: none; font-size: 13px; color: #f27a1a; border-radius: 0 6px 6px 0; padding: 0 15px;">Uygula</button>
+                        </div>
+                    </div>
+                    @if (ViewBag.isInvalid == true)
+                    {
+                        <div class="text-danger mt-2" style="font-weight: 600; font-size: 12px;">
+                            ⚠️ Geçersiz İndirim Kodu!
+                        </div>
+                    }
+                </form>
+            </div>
+
+            <!-- Sepeti Onayla Butonu -->
+            <a href="/Payment/Index" class="btn btn-block text-white font-weight-bold py-3 text-center transition-all d-block btn-sepeti-onayla" style="background-color: #0bc15c; border: none; border-radius: 8px; font-size: 16px; text-decoration: none;">
+                Sepeti Onayla
+            </a>
+            
+            <span class="text-success font-weight-bold text-center d-block mt-2" style="font-size: 11px;">
+                🎉 Bu siparişten @((ViewBag.total * 0.5m).ToString("N2")) ₺ tasarruf ediyorsunuz!
+            </span>
+        </div>
+    </div>
+
+    <!-- Gel Al Noktası Güven rozeti -->
+    <div class="p-3 bg-light d-flex align-items-start rounded border" style="border-color: #e2e8f0; font-size: 12px; color: #475569; background-color: #f8fafc;">
+        <i class="fas fa-store text-warning mt-1 mr-3" style="font-size: 16px;"></i>
+        <div>
+            <strong class="text-dark d-block mb-1" style="font-size: 13px;">En yakın gel al noktasını seç!</strong>
+            Siparişini sana uygun zamanda gel al noktasından güvenle teslim alabilirsin.
+        </div>
+    </div>
+</div>

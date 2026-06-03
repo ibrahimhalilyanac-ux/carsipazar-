@@ -1,0 +1,86 @@
+@model List<BasketItemDto>
+<div class="col-lg-8 mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="font-weight-bold m-0 text-dark" style="font-size: 20px;">Sepetim (@Model.Count Ürün)</h4>
+    </div>
+
+    <!-- Satıcı ve Kargo Bilgisi içeren Ana Kart -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden; border: 1px solid #f1f5f9;">
+        <!-- Kart Üst Bilgisi (Satıcı Bilgisi) -->
+        <div class="p-3 border-bottom d-flex align-items-center justify-content-between bg-white">
+            <div class="d-flex align-items-center gap-2">
+                <span class="custom-control custom-checkbox mr-2">
+                    <input type="checkbox" class="custom-control-input" id="check-all" checked>
+                    <label class="custom-control-label" for="check-all"></label>
+                </span>
+                <span class="text-muted" style="font-size: 13px;">Satıcı: </span>
+                <span class="font-weight-bold text-dark ml-1" style="font-size: 14px;">ÇarşıPazar Official</span>
+                <span class="badge bg-success text-white ml-2" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">9.8</span>
+            </div>
+            <div class="text-success font-weight-bold d-flex align-items-center" style="font-size: 12px;">
+                <i class="fas fa-truck mr-1"></i> Kargo Bedava!
+            </div>
+        </div>
+
+        <!-- Ürünler Listesi -->
+        <div class="card-body p-0">
+            @foreach (var item in Model)
+            {
+                <div class="d-flex p-3 border-bottom align-items-stretch position-relative cart-item-row" style="background-color: #fff; gap: 15px;">
+                    <!-- Sol Seçim Checkbox'ı -->
+                    <div class="d-flex align-items-center">
+                        <span class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input item-checkbox" id="check-@item.ProductId" checked>
+                            <label class="custom-control-label" for="check-@item.ProductId"></label>
+                        </span>
+                    </div>
+
+                    <!-- Ürün Resmi -->
+                    <div style="width: 80px; height: 100px; flex-shrink: 0; border-radius: 6px; overflow: hidden; border: 1px solid #f1f5f9;">
+                        <img referrerpolicy="no-referrer" src="@item.ProductImageUrl" alt="@item.ProductName" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+
+                    <!-- Ürün Bilgileri (Orta Kısım) -->
+                    <div class="d-flex flex-column justify-content-between flex-grow-1">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="font-weight-bold text-dark product-brand-title" style="font-size: 10px; display: inline-block;">ÇarşıPazar</span>
+                                <a href="/ShoppingCart/RemoveBasketItem/@item.ProductId" class="hover-red text-muted" style="font-size: 13.5px; text-decoration: none;">
+                                    <i class="far fa-trash-alt mr-1"></i> Sil
+                                </a>
+                            </div>
+                            <h5 class="text-muted m-0 mt-1" style="font-size: 13.5px; font-weight: normal; line-height: 1.4; color: #475569 !important;">@item.ProductName</h5>
+                            <span class="text-muted d-block mt-1" style="font-size: 11.5px;">Beden: Standart | Renk: Çok Renkli</span>
+                        </div>
+
+                        <!-- Kargo Teslimat Süresi Notu -->
+                        <div class="text-success mt-2 d-flex align-items-center" style="font-size: 11.5px;">
+                            <i class="far fa-clock mr-1"></i> 7 saat 28 dakika içinde sipariş verirseniz <strong>en geç yarın kargoda!</strong>
+                        </div>
+                    </div>
+
+                    <!-- Fiyat ve Miktar Alanı (Sağ Kısım) -->
+                    <div class="d-flex flex-column justify-content-between align-items-end" style="min-width: 130px; flex-shrink: 0;">
+                        <!-- Fiyatlar -->
+                        <div class="text-right">
+                            <span class="text-muted" style="font-size: 11.5px; text-decoration: line-through; display: block;">@((item.Price * 1.5m).ToString("N2")) ₺</span>
+                            <span class="font-weight-bold" style="color: #f27a1a; font-size: 17px; display: block;">@item.Price.ToString("N2") ₺</span>
+                            <span class="text-success font-weight-bold" style="font-size: 10.5px; display: block;">Kazancın: @((item.Price * 0.5m).ToString("N2")) ₺</span>
+                        </div>
+
+                        <!-- Miktar Seçici (Pill Tasarımı) -->
+                        <div class="d-flex align-items-center justify-content-between px-2 py-1 bg-white border rounded-pill" style="width: 90px; border-color: #e2e8f0; height: 32px;">
+                            <a href="/ShoppingCart/DecreaseBasketItem/@item.ProductId" class="quantity-pill-btn" style="font-size: 11px;">
+                                <i class="fa fa-minus"></i>
+                            </a>
+                            <span class="font-weight-bold text-dark" style="font-size: 13px;">@item.Quantity</span>
+                            <a href="/ShoppingCart/AddBasketItem/@item.ProductId" class="quantity-pill-btn" style="font-size: 11px;">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
