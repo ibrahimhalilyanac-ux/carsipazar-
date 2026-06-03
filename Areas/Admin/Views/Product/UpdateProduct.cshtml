@@ -1,0 +1,242 @@
+@model UpdateProductDto
+
+@{
+    ViewData["Title"] = "UpdateProduct";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Ürün Güncelleme Sayfası</h4>
+                <br />
+                <div class="bs-example" data-example-id="bordered-table">
+
+                    <form method="post">
+                        <input type="hidden" asp-for="ProductId" />
+                        <label>Ürün Adı</label>
+                        <input type="text" class="form-control" asp-for="ProductName" />
+                        <br />
+                        <label>Ürün Fiyatı</label>
+                        <input type="text" class="form-control" asp-for="ProductPrice" />
+                        <br />
+                        <label>Ürün Görseli</label>
+                        <input type="text" class="form-control" asp-for="ProductImageUrl" />
+                        <br />
+                        <label>Ürün Kategorisi</label>
+                        @Html.DropDownListFor(x=>x.CategoryId,(List<SelectListItem>)ViewBag.CategoryValues,"Lütfen Kategori Seçiniz",new {@class="form-control"})
+                        <br />
+
+                        <!-- Filtreleme Seçenekleri (Admin Panel) -->
+                        <div class="panel panel-info" id="filterPanel" style="border: 1px solid #bce8f1; border-radius: 4px; margin-bottom: 20px; background-color: #fff; display: none;">
+                            <div class="panel-heading" style="color: #31708f; background-color: #d9edf7; border-color: #bce8f1; padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #bce8f1;">
+                                <i class="fa fa-filter"></i> Ürün Özellikleri & Filtreleme Seçenekleri
+                            </div>
+                            <div class="panel-body" style="padding: 15px;">
+                                <div class="row">
+                                    <div class="col-md-3" id="brandGroup">
+                                        <label style="font-weight: 600;" id="brandLabel">Marka</label>
+                                        <input type="text" id="filterBrand" class="form-control" placeholder="Örn: Nike, Koton, Apple" />
+                                    </div>
+                                    <div class="col-md-3" id="sizeGroup">
+                                        <label style="font-weight: 600;" id="sizeLabel">Beden / Ayakkabı No</label>
+                                        <input type="text" id="filterSize" class="form-control" placeholder="Örn: XL, M, 40, 42" />
+                                    </div>
+                                    <div class="col-md-3" id="genderGroup">
+                                        <label style="font-weight: 600;">Cinsiyet</label>
+                                        <select id="filterGender" class="form-control">
+                                            <option value="">Seçiniz</option>
+                                            <option value="Kadın">Kadın</option>
+                                            <option value="Erkek">Erkek</option>
+                                            <option value="Unisex">Unisex</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3" id="colorGroup">
+                                        <label style="font-weight: 600;">Renk</label>
+                                        <select id="filterColor" class="form-control">
+                                            <option value="">Seçiniz</option>
+                                            <option value="Siyah">Siyah</option>
+                                            <option value="Beyaz">Beyaz</option>
+                                            <option value="Mavi">Mavi</option>
+                                            <option value="Kırmızı">Kırmızı</option>
+                                            <option value="Sarı">Sarı</option>
+                                            <option value="Gri">Gri</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label>Ürün Açıklaması</label>
+                        <textarea class="form-control" asp-for="ProductDescription" rows="5"></textarea>
+                        <br />
+                        <button class="btn btn-primary">Ürünü Güncelle</button>
+                    </form>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const categorySelect = document.getElementById('CategoryId');
+                            const filterPanel = document.getElementById('filterPanel');
+                            const brandGroup = document.getElementById('brandGroup');
+                            const sizeGroup = document.getElementById('sizeGroup');
+                            const genderGroup = document.getElementById('genderGroup');
+                            const colorGroup = document.getElementById('colorGroup');
+
+                            const brandLabel = document.getElementById('brandLabel');
+                            const brandInput = document.getElementById('filterBrand');
+                            
+                            const sizeLabel = document.getElementById('sizeLabel');
+                            const sizeInput = document.getElementById('filterSize');
+
+                            const genderInput = document.getElementById('filterGender');
+                            const colorInput = document.getElementById('filterColor');
+
+                            function normalizeText(text) {
+                                if (!text) return "";
+                                return text.toLowerCase()
+                                           .replace(/ı/g, 'i')
+                                           .replace(/o/g, 'o')
+                                           .replace(/ö/g, 'o')
+                                           .replace(/ü/g, 'u')
+                                           .replace(/ç/g, 'c')
+                                           .replace(/ş/g, 's')
+                                           .replace(/ğ/g, 'g')
+                                           .replace(/i̇/g, 'i') // Handles Turkish dotted capital I when lowered
+                                           .trim();
+                            }
+
+                            function updateFilters() {
+                                if (!categorySelect || categorySelect.selectedIndex === -1) {
+                                    if (filterPanel) filterPanel.style.display = "none";
+                                    return;
+                                }
+                                
+                                const option = categorySelect.options[categorySelect.selectedIndex];
+                                const categoryText = option.text;
+                                const categoryValue = option.value;
+
+                                if (!categoryValue || categoryText === "Lütfen Kategori Seçiniz") {
+                                    if (filterPanel) filterPanel.style.display = "none";
+                                    return;
+                                }
+
+                                if (filterPanel) filterPanel.style.display = "block";
+                                const norm = normalizeText(categoryText);
+
+                                // Reset to default
+                                brandGroup.style.display = "block";
+                                sizeGroup.style.display = "block";
+                                genderGroup.style.display = "block";
+                                colorGroup.style.display = "block";
+
+                                brandLabel.innerText = "Marka";
+                                brandInput.placeholder = "Örn: Nike, Samsung, Apple";
+                                sizeLabel.innerText = "Beden / Numara / Boyut";
+                                sizeInput.placeholder = "Örn: XL, 40, M, 6.7 inç";
+
+                                // 1. Category Specific Logic
+                                if (norm.includes("giyim") || norm.includes("aksesuar")) {
+                                    sizeLabel.innerText = "Beden (XS, S, M, L, XL)";
+                                    sizeInput.placeholder = "Örn: M, L, XL";
+                                } 
+                                else if (norm.includes("ayakkabi") || norm.includes("canta")) {
+                                    sizeLabel.innerText = "Ayakkabı Numarası";
+                                    sizeInput.placeholder = "Örn: 38, 40, 42";
+                                }
+                                else if (norm.includes("elektronik") || norm.includes("teknoloji") || norm.includes("bilgisayar") || norm.includes("telefon")) {
+                                    sizeLabel.innerText = "Ekran Boyutu / Bellek";
+                                    sizeInput.placeholder = "Örn: 6.1 inç, 16GB RAM, 15.6 inç";
+                                    genderGroup.style.display = "none";
+                                    genderInput.value = "";
+                                }
+                                else if (norm.includes("ev") || norm.includes("dekorasyon") || norm.includes("mobilya")) {
+                                    sizeLabel.innerText = "Malzeme / Boyut";
+                                    sizeInput.placeholder = "Örn: Ahşap, Metal, 120x60 cm";
+                                    genderGroup.style.display = "none";
+                                    genderInput.value = "";
+                                }
+                                else if (norm.includes("mutfak")) {
+                                    sizeLabel.innerText = "Malzeme";
+                                    sizeInput.placeholder = "Örn: Granit, Porselen, Çelik";
+                                    genderGroup.style.display = "none";
+                                    genderInput.value = "";
+                                }
+                                else if (norm.includes("kozmetik") || norm.includes("bakim") || norm.includes("parfum")) {
+                                    sizeLabel.innerText = "Cilt Tipi / Hacim";
+                                    sizeInput.placeholder = "Örn: Kuru, Yağlı, 100ml, 50ml";
+                                    genderGroup.style.display = "none";
+                                    genderInput.value = "";
+                                    colorGroup.style.display = "none";
+                                    colorInput.value = "";
+                                }
+                                else if (norm.includes("kitap") || norm.includes("hobi") || norm.includes("oyuncak") || norm.includes("kirtasiye")) {
+                                    brandLabel.innerText = "Yazar / Yayınevi";
+                                    brandInput.placeholder = "Örn: Yaşar Kemal, Can Yayınları";
+                                    sizeLabel.innerText = "Tür / Yaş Grubu";
+                                    sizeInput.placeholder = "Örn: Roman, Tarih, Çocuk";
+                                    genderGroup.style.display = "none";
+                                    genderInput.value = "";
+                                    colorGroup.style.display = "none";
+                                    colorInput.value = "";
+                                }
+                                else if (norm.includes("anne") || norm.includes("bebek")) {
+                                    sizeLabel.innerText = "Beden / Yaş Grubu";
+                                    sizeInput.placeholder = "Örn: 0-3 Ay, 12-18 Ay";
+                                }
+                                else if (norm.includes("supermarket") || norm.includes("gida")) {
+                                    sizeLabel.innerText = "Ürün Tipi / Hacim";
+                                    sizeInput.placeholder = "Örn: Organik, Glütensiz, 1 Litre, 500g";
+                                    genderGroup.style.display = "none";
+                                    genderInput.value = "";
+                                    colorGroup.style.display = "none";
+                                    colorInput.value = "";
+                                }
+                                else if (norm.includes("spor") || norm.includes("outdoor")) {
+                                    sizeLabel.innerText = "Beden / Ağırlık / Boyut";
+                                    sizeInput.placeholder = "Örn: XL, 10kg, 1 Litre";
+                                }
+                            }
+
+                            if (categorySelect) {
+                                categorySelect.addEventListener('change', updateFilters);
+                                updateFilters(); // Run on initial load
+                            }
+
+                            // Run parse logic on initial load
+                            const descArea = document.getElementById('ProductDescription');
+                            const descText = descArea.value;
+                            const filterRegex = /<!--Filters:brand=(.*?);size=(.*?);gender=(.*?);color=(.*?)-->/;
+                            const match = descText.match(filterRegex);
+                            if (match) {
+                                document.getElementById('filterBrand').value = match[1];
+                                document.getElementById('filterSize').value = match[2];
+                                document.getElementById('filterGender').value = match[3];
+                                document.getElementById('filterColor').value = match[4];
+                                descArea.value = descText.replace(/<!--Filters:.*?-->/g, '').trim();
+                            }
+
+                            const form = document.querySelector('form');
+                            form.addEventListener('submit', function(e) {
+                                const brand = document.getElementById('filterBrand').value.trim();
+                                const size = document.getElementById('filterSize').value.trim();
+                                const gender = document.getElementById('filterGender').value.trim();
+                                const color = document.getElementById('filterColor').value.trim();
+                                
+                                let currentDesc = descArea.value;
+                                currentDesc = currentDesc.replace(/<!--Filters:.*?-->/g, '').trim();
+                                
+                                if (brand || size || gender || color) {
+                                    const filterTag = `\n<!--Filters:brand=${brand};size=${size};gender=${gender};color=${color}-->`;
+                                    descArea.value = currentDesc + filterTag;
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

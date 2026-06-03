@@ -1,0 +1,74 @@
+@model List<ResultProductWithCategoryDto>
+
+@{
+    ViewData["Title"] = "ProductListWithCategory";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-box">
+                
+                <!-- Kategori Filtreleme Tabları -->
+                <div class="category-pills-wrapper" style="margin-bottom: 25px; background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eaeaea; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+                    <h5 style="margin-top: 0; margin-bottom: 15px; font-weight: 700; color: #555; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Kategoriye Göre Filtrele:</h5>
+                    <div class="category-pills" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <a href="/Admin/Product/ProductListWithCategory" 
+                           class="btn @(string.IsNullOrEmpty(ViewBag.SelectedCategoryId as string) ? "btn-primary" : "btn-default")" 
+                           style="border-radius: 20px; font-weight: 600; padding: 8px 22px; text-decoration: none; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid @(string.IsNullOrEmpty(ViewBag.SelectedCategoryId as string) ? "#337ab7" : "#ddd"); @(string.IsNullOrEmpty(ViewBag.SelectedCategoryId as string) ? "" : "background: #fff; color: #555;")">
+                            Tüm Ürünler
+                        </a>
+                        @if (ViewBag.Categories != null)
+                        {
+                            foreach (var category in (List<MultiShop.DtoLayer.CatalogDtos.CategoryDtos.ResultCategoryDto>)ViewBag.Categories)
+                            {
+                                var isSelected = ViewBag.SelectedCategoryId as string == category.CategoryID;
+                                <a href="/Admin/Product/ProductListWithCategory?id=@category.CategoryID" 
+                                   class="btn @(isSelected ? "btn-primary" : "btn-default")" 
+                                   style="border-radius: 20px; font-weight: 600; padding: 8px 22px; text-decoration: none; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid @(isSelected ? "#337ab7" : "#ddd"); @(isSelected ? "" : "background: #fff; color: #555;")">
+                                    @category.CategoryName
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="bs-example" data-example-id="bordered-table">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ürün Adı</th>
+                                <th>Ürün Fiyatı</th>
+                                <th>Ürün Kategori</th>
+                                <th>Sil</th>
+                                <th>Güncelle</th>
+                                <th>Ürün Görselleri</th>
+                                <th>Açıklama ve Bilgi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                count++;
+                                <tr>
+                                    <th scope="row">@count</th>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.ProductPrice</td>
+                                    <td>@(item.Category != null ? item.Category.CategoryName : "Kategori Yok")</td>
+                                    <td><a href="/Admin/Product/DeleteProduct/@item.ProductId" class="btn btn-danger">Sil</a></td>
+                                    <td><a href="/Admin/Product/UpdateProduct/@item.ProductId" class="btn btn-success">Güncelle</a></td>
+                                    <td><a href="/Admin/ProductImage/ProductImageDetail/@item.ProductId" class="btn btn-warning">Ürün Görselleri</a></td>
+                                    <td><a href="/Admin/ProductDetail/UpdateProductDetail/@item.ProductId" class="btn btn-info">Açıklama ve Bilgi</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/Admin/Product/CreateProduct/" class="btn btn-primary">Yeni Ürün Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
